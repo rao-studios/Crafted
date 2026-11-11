@@ -1,0 +1,8 @@
+{
+  "name": "invoice-calculator",
+  "version": "1.2.0",
+  "description": "Total an invoice with discounts and regional sales tax, rounded half to even.",
+  "main": "src/invoice.js",
+  "bin": {"invoice": "src/cli.js"},
+  "license": "MIT"
+}

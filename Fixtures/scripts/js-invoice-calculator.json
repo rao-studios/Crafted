@@ -1,0 +1,1636 @@
+{
+ "format": "crafted-script/1",
+ "answers": [
+  {
+   "purpose": "engineer.brief",
+   "json": {
+    "title": "Invoice Calculator",
+    "summary": "A small Node.js tool that totals an invoice read from a JSON file: each line's amount (quantity times unit price), the subtotal, a discount (a percent, or a fixed amount never above the subtotal) applied before tax, sales tax at the region's rate from data/rates.json (CA by default), and the grand total. Every amount is rounded half to even (banker's rounding) to the cent.",
+    "purpose": "Total an invoice with discounts and regional sales tax.",
+    "kind": "cli",
+    "entry": [
+     "node src/cli.js invoice.json [--region NY]"
+    ],
+    "languages": [
+     "javascript"
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: src/round.js (",
+   "json": {
+    "role": "logic",
+    "summary": "Rounds half to even at a number of places, treating a difference within 1e-9 of a half as a tie.",
+    "operations": [
+     {
+      "name": "roundHalfEven",
+      "signature": "roundHalfEven(value, places = 2)",
+      "lines": "3-13",
+      "does": "Rounds half to even.",
+      "purity": "pure"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "A tie rounds to the even neighbour.",
+      "formula": "floor % 2 === 0 ? floor : floor + 1",
+      "lines": "10"
+     },
+     {
+      "statement": "A tie is a difference within epsilon of 0.5.",
+      "formula": "Math.abs(diff - 0.5) < epsilon",
+      "lines": "8-9"
+     },
+     {
+      "statement": "Otherwise it rounds as Math.round does.",
+      "formula": "Math.round(scaled) / factor",
+      "lines": "12"
+     }
+    ],
+    "spotted": [
+     {
+      "title": "round half to even",
+      "entry": "every amount"
+     }
+    ],
+    "importance": 0.9,
+    "why": "Every amount goes through it."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: src/invoice.js (",
+   "json": {
+    "role": "logic",
+    "summary": "Invoice arithmetic: line amounts, subtotal, discount, tax by region and the total, each rounded half to even.",
+    "entities": [
+     {
+      "name": "rates",
+      "kind": "table",
+      "lines": "3"
+     }
+    ],
+    "operations": [
+     {
+      "name": "lineAmount",
+      "signature": "lineAmount(line)",
+      "lines": "6-11",
+      "does": "Quantity times unit price.",
+      "purity": "pure"
+     },
+     {
+      "name": "subtotal",
+      "signature": "subtotal(lines)",
+      "lines": "13-15",
+      "does": "The sum of the line amounts.",
+      "purity": "pure"
+     },
+     {
+      "name": "discountAmount",
+      "signature": "discountAmount(subtotalValue, discount)",
+      "lines": "17-23",
+      "does": "The discount off the subtotal.",
+      "purity": "pure"
+     },
+     {
+      "name": "taxRate",
+      "signature": "taxRate(region)",
+      "lines": "25-30",
+      "does": "The region's rate.",
+      "purity": "reads"
+     },
+     {
+      "name": "totals",
+      "signature": "totals(invoice, region)",
+      "lines": "32-38",
+      "does": "Every total.",
+      "purity": "pure"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "A negative quantity or price is refused.",
+      "formula": "line.quantity < 0 || line.unitPrice < 0",
+      "lines": "7-9"
+     },
+     {
+      "statement": "A percent discount comes off the subtotal.",
+      "formula": "subtotalValue * discount.percent / 100",
+      "lines": "19-20"
+     },
+     {
+      "statement": "A fixed discount never exceeds the subtotal.",
+      "formula": "Math.min(roundHalfEven(discount.amount), subtotalValue)",
+      "lines": "22"
+     },
+     {
+      "statement": "Tax is the taxable amount times the region's rate.",
+      "formula": "taxable * taxRate(region)",
+      "lines": "36"
+     }
+    ],
+    "inputs": [
+     "invoice",
+     "region"
+    ],
+    "outputs": [
+     "subtotal, discount, taxable, tax, total"
+    ],
+    "depends": [
+     "src/round.js",
+     "data/rates.json"
+    ],
+    "spotted": [
+     {
+      "title": "total an invoice",
+      "entry": "node src/cli.js invoice.json"
+     },
+     {
+      "title": "sales tax by region",
+      "entry": "--region"
+     }
+    ],
+    "importance": 1.0,
+    "why": "The arithmetic of the whole tool."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: src/config.js (",
+   "json": {
+    "role": "config",
+    "summary": "The default region, and a payments token for a hosted version.",
+    "entities": [
+     {
+      "name": "DEFAULT_REGION",
+      "kind": "constant",
+      "lines": "3"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "The default region is \"CA\".",
+      "formula": "DEFAULT_REGION = \"CA\"",
+      "lines": "3"
+     }
+    ],
+    "importance": 0.3,
+    "why": "The default region."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: src/cli.js (",
+   "json": {
+    "role": "entry",
+    "summary": "Reads an invoice file and prints its totals for a region.",
+    "operations": [
+     {
+      "name": "main",
+      "signature": "main(argv)",
+      "lines": "8-17",
+      "does": "Reads, totals and prints.",
+      "purity": "effects"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "The region is the one after --region, else the default.",
+      "formula": "at >= 0 ? argv[at + 1] : DEFAULT_REGION",
+      "lines": "10-11"
+     }
+    ],
+    "effects": [
+     {
+      "kind": "file",
+      "detail": "readFileSync",
+      "lines": "12"
+     },
+     {
+      "kind": "output",
+      "detail": "console.log",
+      "lines": "15"
+     },
+     {
+      "kind": "entry",
+      "detail": "process.argv",
+      "lines": "19"
+     }
+    ],
+    "depends": [
+     "src/invoice.js",
+     "src/config.js"
+    ],
+    "spotted": [
+     {
+      "title": "total an invoice file",
+      "entry": "node src/cli.js invoice.json"
+     }
+    ],
+    "importance": 0.8,
+    "why": "How the tool is entered."
+   }
+  },
+  {
+   "purpose": "engineer.reduce.domain",
+   "json": {
+    "nature": "business",
+    "kind": "cli",
+    "entities": [
+     {
+      "name": "Invoice",
+      "fields": [
+       "lines",
+       "discount"
+      ],
+      "files": [
+       "src/invoice.js"
+      ]
+     },
+     {
+      "name": "Line",
+      "fields": [
+       "description",
+       "quantity",
+       "unitPrice"
+      ],
+      "files": [
+       "src/invoice.js"
+      ]
+     },
+     {
+      "name": "Rate",
+      "fields": [
+       "region",
+       "rate"
+      ],
+      "files": [
+       "data/rates.json"
+      ]
+     }
+    ],
+    "glossary": [
+     {
+      "term": "taxable",
+      "meaning": "the subtotal less the discount"
+     },
+     {
+      "term": "half to even",
+      "meaning": "a tie rounds to the even cent"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.usecases",
+   "json": {
+    "usecases": [
+     {
+      "id": "uc1",
+      "kind": "business",
+      "title": "Total an invoice",
+      "actor": "someone billing a customer",
+      "trigger": {
+       "entry": "node src/cli.js invoice.json",
+       "evidence": "src/cli.js:8-17"
+      },
+      "inputs": [
+       {
+        "name": "invoice",
+        "type": "file",
+        "source": "a JSON file",
+        "example": "samples/invoice.json"
+       }
+      ],
+      "steps": [
+       {
+        "text": "line amounts and subtotal",
+        "evidence": "src/invoice.js:6-15"
+       },
+       {
+        "text": "every total",
+        "evidence": "src/invoice.js:32-38"
+       }
+      ],
+      "rules": [
+       "each amount rounds half to even to the cent"
+      ],
+      "outputs": [
+       {
+        "name": "totals",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true,
+       "fileIO": true
+      },
+      "verifiability": {
+       "sourceTests": [],
+       "examples": [
+        "samples/invoice.json"
+       ],
+       "derivable": true
+      },
+      "value": 1.0,
+      "confidence": 0.85
+     },
+     {
+      "id": "uc2",
+      "kind": "business",
+      "title": "Take a discount before tax",
+      "actor": "someone billing a customer",
+      "trigger": {
+       "entry": "an invoice's discount",
+       "evidence": "src/invoice.js:17-23"
+      },
+      "inputs": [
+       {
+        "name": "invoice",
+        "type": "file",
+        "source": "a JSON file",
+        "example": "samples/invoice.json"
+       }
+      ],
+      "steps": [
+       {
+        "text": "percent or fixed, never above the subtotal",
+        "evidence": "src/invoice.js:17-23"
+       }
+      ],
+      "rules": [
+       "a fixed discount never exceeds the subtotal"
+      ],
+      "outputs": [
+       {
+        "name": "totals",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true,
+       "fileIO": true
+      },
+      "verifiability": {
+       "sourceTests": [],
+       "examples": [
+        "samples/invoice.json"
+       ],
+       "derivable": true
+      },
+      "value": 0.7,
+      "confidence": 0.85
+     },
+     {
+      "id": "uc3",
+      "kind": "business",
+      "title": "Sales tax by region",
+      "actor": "someone billing a customer",
+      "trigger": {
+       "entry": "--region NY",
+       "evidence": "src/cli.js:10-11"
+      },
+      "inputs": [
+       {
+        "name": "invoice",
+        "type": "file",
+        "source": "a JSON file",
+        "example": "samples/invoice.json"
+       }
+      ],
+      "steps": [
+       {
+        "text": "the region's rate",
+        "evidence": "src/invoice.js:25-30"
+       },
+       {
+        "text": "the rates",
+        "evidence": "data/rates.json:1-7"
+       }
+      ],
+      "rules": [
+       "tax is taxable times the rate"
+      ],
+      "outputs": [
+       {
+        "name": "totals",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true,
+       "fileIO": true
+      },
+      "verifiability": {
+       "sourceTests": [],
+       "examples": [
+        "samples/invoice.json"
+       ],
+       "derivable": true
+      },
+      "value": 0.8,
+      "confidence": 0.85
+     },
+     {
+      "id": "uc4",
+      "kind": "business",
+      "title": "Round half to even",
+      "actor": "someone billing a customer",
+      "trigger": {
+       "entry": "every amount",
+       "evidence": "src/round.js:3-13"
+      },
+      "inputs": [
+       {
+        "name": "invoice",
+        "type": "file",
+        "source": "a JSON file",
+        "example": "samples/invoice.json"
+       }
+      ],
+      "steps": [
+       {
+        "text": "round half to even",
+        "evidence": "src/round.js:3-13"
+       }
+      ],
+      "rules": [
+       "a tie rounds to the even neighbour"
+      ],
+      "outputs": [
+       {
+        "name": "totals",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true,
+       "fileIO": true
+      },
+      "verifiability": {
+       "sourceTests": [],
+       "examples": [
+        "samples/invoice.json"
+       ],
+       "derivable": true
+      },
+      "value": 0.6,
+      "confidence": 0.85
+     },
+     {
+      "id": "uc5",
+      "kind": "business",
+      "title": "List the tax rates",
+      "actor": "someone billing a customer",
+      "trigger": {
+       "entry": "none (latent)",
+       "evidence": "data/rates.json:1-7"
+      },
+      "inputs": [
+       {
+        "name": "invoice",
+        "type": "file",
+        "source": "a JSON file",
+        "example": "samples/invoice.json"
+       }
+      ],
+      "steps": [
+       {
+        "text": "the rates table",
+        "evidence": "data/rates.json:1-7"
+       }
+      ],
+      "rules": [
+       "one rate per region"
+      ],
+      "outputs": [
+       {
+        "name": "totals",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true,
+       "fileIO": true
+      },
+      "verifiability": {
+       "sourceTests": [],
+       "examples": [
+        "samples/invoice.json"
+       ],
+       "derivable": true
+      },
+      "value": 0.5,
+      "confidence": 0.85
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc1 (",
+   "json": {
+    "id": "uc1",
+    "confirmed": true,
+    "title": "Total an invoice",
+    "notes": "The lines show it."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc2 (",
+   "json": {
+    "id": "uc2",
+    "confirmed": true,
+    "title": "Take a discount before tax",
+    "notes": "The lines show it."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc3 (",
+   "json": {
+    "id": "uc3",
+    "confirmed": true,
+    "title": "Sales tax by region",
+    "notes": "The lines show it."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc4 (",
+   "json": {
+    "id": "uc4",
+    "confirmed": true,
+    "title": "Round half to even",
+    "notes": "The lines show it."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc5 (",
+   "json": {
+    "id": "uc5",
+    "confirmed": true,
+    "title": "List the tax rates",
+    "notes": "The lines show it."
+   }
+  },
+  {
+   "purpose": "engineer.interpret.whole",
+   "json": {
+    "name": "Invoice Totals",
+    "word": "invoicetotals",
+    "summary": "Totals invoices with discounts and regional sales tax, lists the rates, and rounds half to even.",
+    "commands": [
+     {
+      "name": "total",
+      "summary": "Totals an invoice file for a region.",
+      "args": [
+       {
+        "name": "invoice",
+        "type": "path",
+        "required": true,
+        "note": "an invoice JSON file in the project"
+       },
+       {
+        "name": "region",
+        "type": "choice",
+        "required": false,
+        "note": "the sales-tax region: CA when left out",
+        "values": [
+         "CA",
+         "NY",
+         "TX",
+         "WA",
+         "OR"
+        ]
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "value",
+        "what": "every total"
+       },
+       {
+        "channel": "canvas",
+        "kind": "report",
+        "what": "the invoice"
+       }
+      ],
+      "usecases": [
+       "uc1",
+       "uc2",
+       "uc3"
+      ]
+     },
+     {
+      "name": "rates",
+      "summary": "The sales-tax rate of every region.",
+      "args": [],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "csv",
+        "what": "the rates"
+       }
+      ],
+      "usecases": [
+       "uc5"
+      ]
+     },
+     {
+      "name": "round",
+      "summary": "Rounds an amount half to even.",
+      "args": [
+       {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "the amount"
+       },
+       {
+        "name": "places",
+        "type": "integer",
+        "required": false,
+        "note": "decimal places: 2 when left out"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "value",
+        "what": "the rounded amount"
+       }
+      ],
+      "usecases": [
+       "uc4"
+      ]
+     }
+    ],
+    "canvas": [
+     "the invoice as a report"
+    ],
+    "handsOff": [
+     "the totals"
+    ],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "src/round.js",
+      "lines": "3-13",
+      "how": "port"
+     },
+     {
+      "path": "src/invoice.js",
+      "lines": "1-40",
+      "how": "port"
+     },
+     {
+      "path": "data/rates.json",
+      "lines": "1-7",
+      "how": "carry"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the payments token in config.js",
+      "why": "it is a secret for a hosted version"
+     },
+     {
+      "what": "printing to the console",
+      "why": "facts and a report take its place"
+     }
+    ],
+    "confidence": {
+     "score": 0.8,
+     "basis": "plain arithmetic, no tests"
+    },
+    "effort": {
+     "units": 2,
+     "sourceLines": 60,
+     "minutes": 15,
+     "risk": "low",
+     "hardest": "the rounding tie"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.interpret.core",
+   "json": {
+    "name": "Invoice Total",
+    "word": "invoicetotal",
+    "summary": "One command that totals an invoice deeply: lines, discount, tax and rounding.",
+    "commands": [
+     {
+      "name": "total",
+      "summary": "Totals an invoice file.",
+      "args": [
+       {
+        "name": "invoice",
+        "type": "path",
+        "required": true,
+        "note": "an invoice JSON file"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "value",
+        "what": "the totals"
+       }
+      ],
+      "usecases": [
+       "uc1",
+       "uc2"
+      ]
+     }
+    ],
+    "canvas": [],
+    "handsOff": [],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "src/round.js",
+      "lines": "3-13",
+      "how": "port"
+     },
+     {
+      "path": "src/invoice.js",
+      "lines": "1-40",
+      "how": "port"
+     },
+     {
+      "path": "data/rates.json",
+      "lines": "1-7",
+      "how": "carry"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the payments token in config.js",
+      "why": "it is a secret for a hosted version"
+     },
+     {
+      "what": "printing to the console",
+      "why": "facts and a report take its place"
+     }
+    ],
+    "confidence": {
+     "score": 0.85,
+     "basis": "one path through the code"
+    },
+    "effort": {
+     "units": 2,
+     "sourceLines": 50,
+     "minutes": 10,
+     "risk": "low",
+     "hardest": "rounding"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.interpret.material",
+   "json": {
+    "name": "Tax Rate Card",
+    "word": "taxratecard",
+    "summary": "The sales-tax rates as material: a rate card for Canvas, and a region's rate handed on.",
+    "commands": [
+     {
+      "name": "rateCard",
+      "summary": "Every region's rate as a report.",
+      "args": [],
+      "produces": [
+       {
+        "channel": "canvas",
+        "kind": "report",
+        "what": "the rate card"
+       }
+      ],
+      "usecases": [
+       "uc5",
+       "uc3"
+      ]
+     },
+     {
+      "name": "taxFor",
+      "summary": "One region's rate, handed on.",
+      "args": [
+       {
+        "name": "region",
+        "type": "choice",
+        "required": true,
+        "note": "the region",
+        "values": [
+         "CA",
+         "NY",
+         "TX",
+         "WA",
+         "OR"
+        ]
+       }
+      ],
+      "produces": [
+       {
+        "channel": "context",
+        "kind": "handoff",
+        "what": "the rate"
+       }
+      ],
+      "usecases": [
+       "uc3"
+      ]
+     }
+    ],
+    "canvas": [
+     "the rate card"
+    ],
+    "handsOff": [
+     "a region's rate"
+    ],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "data/rates.json",
+      "lines": "1-7",
+      "how": "carry"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the payments token in config.js",
+      "why": "it is a secret for a hosted version"
+     },
+     {
+      "what": "printing to the console",
+      "why": "facts and a report take its place"
+     }
+    ],
+    "confidence": {
+     "score": 0.7,
+     "basis": "a table"
+    },
+    "effort": {
+     "units": 1,
+     "sourceLines": 10,
+     "minutes": 5,
+     "risk": "low",
+     "hardest": "none"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.plan",
+   "json": {
+    "summary": "totals invoices with discounts and regional sales tax, lists the rates, and rounds half to even to the cent.",
+    "guide": "Tag invoicetotals to total an invoice: give `invoice` as a JSON file in the project with `lines` of description, quantity and unitPrice, and an optional `discount` of `percent` or `amount`.",
+    "commands": [
+     {
+      "name": "total",
+      "summary": "Totals an invoice file for a region: subtotal, discount, taxable, tax and total.",
+      "usecases": [
+       "uc1",
+       "uc2",
+       "uc3"
+      ],
+      "args": [
+       {
+        "name": "invoice",
+        "type": "path",
+        "required": true,
+        "note": "an invoice JSON file in the project"
+       },
+       {
+        "name": "region",
+        "type": "choice",
+        "required": false,
+        "note": "the sales-tax region: CA when left out",
+        "values": [
+         "CA",
+         "NY",
+         "TX",
+         "WA",
+         "OR"
+        ]
+       }
+      ],
+      "produces": [
+       {
+        "kind": "value",
+        "name": "total"
+       },
+       {
+        "kind": "report",
+        "name": "invoice"
+       }
+      ],
+      "uses": [
+       "InvoiceMath"
+      ],
+      "present": "output"
+     },
+     {
+      "name": "rates",
+      "summary": "The sales-tax rate of every region.",
+      "usecases": [
+       "uc5"
+      ],
+      "args": [],
+      "produces": [
+       {
+        "kind": "value",
+        "name": "regions"
+       },
+       {
+        "kind": "csv",
+        "name": "rates"
+       }
+      ],
+      "uses": [
+       "InvoiceMath"
+      ],
+      "present": "output"
+     },
+     {
+      "name": "round",
+      "summary": "Rounds an amount half to even.",
+      "usecases": [
+       "uc4"
+      ],
+      "args": [
+       {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "the amount"
+       },
+       {
+        "name": "places",
+        "type": "integer",
+        "required": false,
+        "note": "decimal places: 2 when left out"
+       }
+      ],
+      "produces": [
+       {
+        "kind": "value",
+        "name": "rounded"
+       }
+      ],
+      "uses": [
+       "Rounding"
+      ],
+      "present": "output"
+     }
+    ],
+    "units": [
+     {
+      "unit": "Rounding",
+      "kind": "logic",
+      "summary": "Half-to-even rounding as round.js does it.",
+      "uses": [],
+      "resources": [],
+      "calls": [],
+      "functions": [
+       {
+        "name": "halfEven",
+        "params": [
+         {
+          "name": "value",
+          "type": "Double"
+         },
+         {
+          "name": "places",
+          "type": "Int"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "a difference within 1e-9 of a half is a tie, and a tie goes to the even neighbour; otherwise Math.round"
+        ]
+       }
+      ],
+      "evidence": [
+       "src/round.js:3-13"
+      ]
+     },
+     {
+      "unit": "InvoiceMath",
+      "kind": "logic",
+      "summary": "The invoice arithmetic of invoice.js.",
+      "uses": [
+       "InvoiceLine",
+       "Discount",
+       "Invoice",
+       "InvoiceTotals"
+      ],
+      "resources": [
+       "rates.json"
+      ],
+      "calls": [
+       "Rounding"
+      ],
+      "functions": [
+       {
+        "name": "rates",
+        "params": [],
+        "returns": "[String: Double]",
+        "rules": [
+         "the rates table, carried as rates.json"
+        ]
+       },
+       {
+        "name": "lineAmount",
+        "params": [
+         {
+          "name": "line",
+          "type": "InvoiceLine"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "quantity times unit price, to the cent; negatives refused"
+        ]
+       },
+       {
+        "name": "subtotal",
+        "params": [
+         {
+          "name": "lines",
+          "type": "[InvoiceLine]"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "the sum of line amounts, to the cent"
+        ]
+       },
+       {
+        "name": "discountAmount",
+        "params": [
+         {
+          "name": "subtotal",
+          "type": "Double"
+         },
+         {
+          "name": "discount",
+          "type": "Discount?"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "a percent of the subtotal, or a fixed amount never above it"
+        ]
+       },
+       {
+        "name": "taxRate",
+        "params": [
+         {
+          "name": "region",
+          "type": "String"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "the region's rate; an unknown region is refused"
+        ]
+       },
+       {
+        "name": "totals",
+        "params": [
+         {
+          "name": "invoice",
+          "type": "Invoice"
+         },
+         {
+          "name": "region",
+          "type": "String"
+         }
+        ],
+        "returns": "InvoiceTotals",
+        "rules": [
+         "taxable is subtotal less discount; tax is taxable times the rate; every amount to the cent"
+        ]
+       }
+      ],
+      "evidence": [
+       "src/invoice.js:1-40"
+      ]
+     }
+    ],
+    "types": [
+     {
+      "name": "InvoiceLine",
+      "kind": "struct",
+      "note": "One line of an invoice.",
+      "fields": [
+       {
+        "name": "description",
+        "type": "String"
+       },
+       {
+        "name": "quantity",
+        "type": "Double"
+       },
+       {
+        "name": "unitPrice",
+        "type": "Double"
+       }
+      ]
+     },
+     {
+      "name": "Discount",
+      "kind": "struct",
+      "note": "A percent off, or a fixed amount.",
+      "fields": [
+       {
+        "name": "percent",
+        "type": "Double?"
+       },
+       {
+        "name": "amount",
+        "type": "Double?"
+       }
+      ]
+     },
+     {
+      "name": "Invoice",
+      "kind": "struct",
+      "note": "An invoice as its JSON file holds it.",
+      "fields": [
+       {
+        "name": "lines",
+        "type": "[InvoiceLine]"
+       },
+       {
+        "name": "discount",
+        "type": "Discount?"
+       }
+      ]
+     },
+     {
+      "name": "InvoiceTotals",
+      "kind": "struct",
+      "note": "Every total of an invoice.",
+      "fields": [
+       {
+        "name": "subtotal",
+        "type": "Double"
+       },
+       {
+        "name": "discount",
+        "type": "Double"
+       },
+       {
+        "name": "taxable",
+        "type": "Double"
+       },
+       {
+        "name": "tax",
+        "type": "Double"
+       },
+       {
+        "name": "total",
+        "type": "Double"
+       }
+      ]
+     }
+    ],
+    "resources": [
+     {
+      "source": "data/rates.json",
+      "name": "rates.json"
+     }
+    ],
+    "lifts": []
+   }
+  },
+  {
+   "purpose": "engineer.vectors",
+   "match": "The unit: Rounding\n",
+   "json": {
+    "vectors": [
+     {
+      "name": "a tie rounds down to even",
+      "function": "halfEven",
+      "args": {
+       "value": 2.345,
+       "places": 2
+      },
+      "origin": "derived",
+      "expect": 2.34,
+      "tolerance": 1e-12,
+      "evidence": "src/round.js:9-10"
+     },
+     {
+      "name": "a tie rounds up to even",
+      "function": "halfEven",
+      "args": {
+       "value": 2.355,
+       "places": 2
+      },
+      "origin": "derived",
+      "expect": 2.36,
+      "tolerance": 1e-12
+     },
+     {
+      "name": "2.5 to a whole is 2",
+      "function": "halfEven",
+      "args": {
+       "value": 2.5,
+       "places": 0
+      },
+      "origin": "derived",
+      "expect": 2
+     },
+     {
+      "name": "3.5 to a whole is 4",
+      "function": "halfEven",
+      "args": {
+       "value": 3.5,
+       "places": 0
+      },
+      "origin": "derived",
+      "expect": 4
+     },
+     {
+      "name": "no tie rounds to nearest",
+      "function": "halfEven",
+      "args": {
+       "value": 1.234,
+       "places": 2
+      },
+      "origin": "derived",
+      "expect": 1.23,
+      "tolerance": 1e-12
+     },
+     {
+      "name": "a negative tie",
+      "function": "halfEven",
+      "args": {
+       "value": -2.5,
+       "places": 0
+      },
+      "origin": "derived",
+      "expect": -2
+     },
+     {
+      "name": "the same call, the same result",
+      "function": "halfEven",
+      "args": {
+       "value": 7.125,
+       "places": 2
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "deterministic"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.vectors",
+   "match": "The unit: InvoiceMath\n",
+   "json": {
+    "vectors": [
+     {
+      "name": "five regions",
+      "function": "rates",
+      "args": {},
+      "origin": "derived",
+      "expect": {
+       "CA": 0.0725,
+       "NY": 0.04,
+       "TX": 0.0625,
+       "WA": 0.065,
+       "OR": 0
+      },
+      "evidence": "data/rates.json:1-7"
+     },
+     {
+      "name": "two lamps",
+      "function": "lineAmount",
+      "args": {
+       "line": {
+        "description": "Desk lamp",
+        "quantity": 2,
+        "unitPrice": 34.5
+       }
+      },
+      "origin": "derived",
+      "expect": 69,
+      "arithmetic": "2 * 34.5"
+     },
+     {
+      "name": "a negative quantity is refused",
+      "function": "lineAmount",
+      "args": {
+       "line": {
+        "description": "x",
+        "quantity": -1,
+        "unitPrice": 5
+       }
+      },
+      "origin": "derived",
+      "expectError": true
+     },
+     {
+      "name": "the sample's subtotal",
+      "function": "subtotal",
+      "args": {
+       "lines": [
+        {
+         "description": "Walnut desk",
+         "quantity": 1,
+         "unitPrice": 489.0
+        },
+        {
+         "description": "Desk lamp",
+         "quantity": 2,
+         "unitPrice": 34.5
+        },
+        {
+         "description": "Cable tray",
+         "quantity": 3,
+         "unitPrice": 12.25
+        }
+       ]
+      },
+      "origin": "derived",
+      "expect": 594.75,
+      "arithmetic": "489 + 2 * 34.5 + 3 * 12.25",
+      "tolerance": 1e-09
+     },
+     {
+      "name": "ten percent off",
+      "function": "discountAmount",
+      "args": {
+       "subtotal": 594.75,
+       "discount": {
+        "percent": 10
+       }
+      },
+      "origin": "derived",
+      "expect": 59.48,
+      "tolerance": 1e-09
+     },
+     {
+      "name": "a fixed discount never exceeds the subtotal",
+      "function": "discountAmount",
+      "args": {
+       "subtotal": 20,
+       "discount": {
+        "amount": 25
+       }
+      },
+      "origin": "derived",
+      "expect": 20
+     },
+     {
+      "name": "no discount is nothing off",
+      "function": "discountAmount",
+      "args": {
+       "subtotal": 20
+      },
+      "origin": "derived",
+      "expect": 0
+     },
+     {
+      "name": "California's rate",
+      "function": "taxRate",
+      "args": {
+       "region": "CA"
+      },
+      "origin": "derived",
+      "expect": 0.0725
+     },
+     {
+      "name": "an unknown region is refused",
+      "function": "taxRate",
+      "args": {
+       "region": "ZZ"
+      },
+      "origin": "derived",
+      "expectError": true
+     },
+     {
+      "name": "the sample in California",
+      "function": "totals",
+      "args": {
+       "invoice": {
+        "lines": [
+         {
+          "description": "Walnut desk",
+          "quantity": 1,
+          "unitPrice": 489.0
+         },
+         {
+          "description": "Desk lamp",
+          "quantity": 2,
+          "unitPrice": 34.5
+         },
+         {
+          "description": "Cable tray",
+          "quantity": 3,
+          "unitPrice": 12.25
+         }
+        ],
+        "discount": {
+         "percent": 10
+        }
+       },
+       "region": "CA"
+      },
+      "origin": "derived",
+      "expect": {
+       "subtotal": 594.75,
+       "discount": 59.48,
+       "taxable": 535.27,
+       "tax": 38.81,
+       "total": 574.08
+      },
+      "tolerance": 1e-09
+     },
+     {
+      "name": "the sample in New York",
+      "function": "totals",
+      "args": {
+       "invoice": {
+        "lines": [
+         {
+          "description": "Walnut desk",
+          "quantity": 1,
+          "unitPrice": 489.0
+         },
+         {
+          "description": "Desk lamp",
+          "quantity": 2,
+          "unitPrice": 34.5
+         },
+         {
+          "description": "Cable tray",
+          "quantity": 3,
+          "unitPrice": 12.25
+         }
+        ],
+        "discount": {
+         "percent": 10
+        }
+       },
+       "region": "NY"
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "equals",
+       "path": "total",
+       "value": 556.68
+      },
+      "tolerance": 1e-09
+     },
+     {
+      "name": "tax is within the taxable amount",
+      "function": "totals",
+      "args": {
+       "invoice": {
+        "lines": [
+         {
+          "description": "Walnut desk",
+          "quantity": 1,
+          "unitPrice": 489.0
+         },
+         {
+          "description": "Desk lamp",
+          "quantity": 2,
+          "unitPrice": 34.5
+         },
+         {
+          "description": "Cable tray",
+          "quantity": 3,
+          "unitPrice": 12.25
+         }
+        ],
+        "discount": {
+         "percent": 10
+        }
+       },
+       "region": "WA"
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "inRange",
+       "path": "tax",
+       "min": 0,
+       "max": 535.27
+      }
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.calls",
+   "match": "The command: total\n",
+   "json": {
+    "command": "total",
+    "input": {
+     "command": "total",
+     "invoice": "invoice.json",
+     "region": "CA"
+    },
+    "files": {
+     "invoice.json": "{\"lines\": [{\"description\": \"Walnut desk\", \"quantity\": 1, \"unitPrice\": 489.0}, {\"description\": \"Desk lamp\", \"quantity\": 2, \"unitPrice\": 34.5}, {\"description\": \"Cable tray\", \"quantity\": 3, \"unitPrice\": 12.25}], \"discount\": {\"percent\": 10}}"
+    },
+    "expect": {
+     "facts": {
+      "total": 574.08,
+      "tax": 38.81
+     },
+     "tolerance": 0.001,
+     "files": 1
+    }
+   }
+  },
+  {
+   "purpose": "engineer.calls",
+   "match": "The command: rates\n",
+   "json": {
+    "command": "rates",
+    "input": {
+     "command": "rates"
+    },
+    "expect": {
+     "facts": {
+      "regions": 5
+     },
+     "files": 1
+    }
+   }
+  },
+  {
+   "purpose": "engineer.calls",
+   "match": "The command: round\n",
+   "json": {
+    "command": "round",
+    "input": {
+     "command": "round",
+     "value": 2.345,
+     "places": 2
+    },
+    "expect": {
+     "facts": {
+      "rounded": 2.34
+     },
+     "tolerance": 1e-09,
+     "files": 0
+    }
+   }
+  },
+  {
+   "purpose": "engineer.unit",
+   "match": "The unit: Rounding\n",
+   "text": "```swift\nimport Foundation\n\n/// Half-to-even rounding as src/round.js does it: a difference within 1e-9 of a half is a tie, and a tie goes to the\n/// even neighbour; anything else rounds as JavaScript's Math.round (half up, toward positive infinity).\npublic enum Rounding: RoundingContract {\n    public static func halfEven(value: Double, places: Int) throws -> Double {\n        let factor = pow(10.0, Double(places))\n        let scaled = value * factor\n        let floor = scaled.rounded(.down)\n        let diff = scaled - floor\n        if abs(diff - 0.5) < 1e-9 {\n            let even = floor.truncatingRemainder(dividingBy: 2) == 0 ? floor : floor + 1\n            return even / factor\n        }\n        return (scaled + 0.5).rounded(.down) / factor\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.unit",
+   "match": "The unit: InvoiceMath\n",
+   "text": "```swift\nimport Foundation\n\n/// The invoice arithmetic of src/invoice.js, every amount to the cent, half to even.\npublic enum InvoiceMath: InvoiceMathContract {\n    public static func rates() throws -> [String: Double] {\n        try CoreResources.json([String: Double].self, \"rates.json\")\n    }\n\n    public static func lineAmount(line: InvoiceLine) throws -> Double {\n        guard line.quantity >= 0, line.unitPrice >= 0 else {\n            throw CoreFailure.invalid(\"quantity and unit price must not be negative: \\(line.description) has \\(line.quantity) at \\(line.unitPrice).\")\n        }\n        return try Rounding.halfEven(value: line.quantity * line.unitPrice, places: 2)\n    }\n\n    public static func subtotal(lines: [InvoiceLine]) throws -> Double {\n        var sum = 0.0\n        for line in lines { sum += try lineAmount(line: line) }\n        return try Rounding.halfEven(value: sum, places: 2)\n    }\n\n    public static func discountAmount(subtotal: Double, discount: Discount?) throws -> Double {\n        guard let discount else { return 0 }\n        if let percent = discount.percent {\n            return try Rounding.halfEven(value: subtotal * percent / 100, places: 2)\n        }\n        return min(try Rounding.halfEven(value: discount.amount ?? 0, places: 2), subtotal)\n    }\n\n    public static func taxRate(region: String) throws -> Double {\n        let table = try rates()\n        guard let rate = table[region] else {\n            throw CoreFailure.invalid(\"no tax rate for region \\(region): use \" + table.keys.sorted().joined(separator: \", \") + \".\")\n        }\n        return rate\n    }\n\n    public static func totals(invoice: Invoice, region: String) throws -> InvoiceTotals {\n        let sub = try subtotal(lines: invoice.lines)\n        let discount = try discountAmount(subtotal: sub, discount: invoice.discount)\n        let taxable = try Rounding.halfEven(value: sub - discount, places: 2)\n        let tax = try Rounding.halfEven(value: taxable * taxRate(region: region), places: 2)\n        return InvoiceTotals(subtotal: sub, discount: discount, taxable: taxable, tax: tax, total: try Rounding.halfEven(value: taxable + tax, places: 2))\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.handler",
+   "match": "The command: total\n",
+   "text": "```swift\nimport Foundation\n\n/// `total`: an invoice file's totals as facts, and the invoice as a report.\nenum TotalHandler: CommandHandler {\n    static func run(_ arguments: TotalArguments, _ kit: CommandKit) async throws -> [Product] {\n        let text = try kit.text(arguments.invoice)\n        let invoice: Invoice\n        do {\n            invoice = try JSONDecoder().decode(Invoice.self, from: Data(text.utf8))\n        } catch {\n            throw CoreFailure.invalid(\"\\(arguments.invoice) is not an invoice: give JSON with `lines` of description, quantity and unitPrice.\")\n        }\n        let region = arguments.region ?? \"CA\"\n        let totals = try InvoiceMath.totals(invoice: invoice, region: region)\n        let rows = try invoice.lines.map { line in\n            [line.description, FactValue.format(line.quantity), FactValue.format(line.unitPrice), FactValue.format(try InvoiceMath.lineAmount(line: line))]\n        }\n        let report = Report(name: \"invoice\", title: \"Invoice totals\", subtitle: \"\\(invoice.lines.count) lines, \\(region) sales tax\", blocks: [\n            .table(columns: [\"item\", \"quantity\", \"unit price\", \"amount\"], rows: rows),\n            .facts([Fact(\"subtotal\", .number(totals.subtotal)), Fact(\"discount\", .number(totals.discount)), Fact(\"tax\", .number(totals.tax)),\n                    Fact(\"total\", .number(totals.total))]),\n            .note(\"Every amount is rounded half to even to the cent.\"),\n        ])\n        return [\n            .value(\"subtotal\", totals.subtotal), .value(\"discount\", totals.discount), .value(\"taxable\", totals.taxable),\n            .value(\"tax\", totals.tax), .value(\"total\", totals.total), .report(report),\n            .say(\"The invoice comes to \\(FactValue.format(totals.total)) with \\(region) tax of \\(FactValue.format(totals.tax)).\"),\n        ]\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.handler",
+   "match": "The command: rates\n",
+   "text": "```swift\nimport Foundation\n\n/// `rates`: every region's sales-tax rate as a table.\nenum RatesHandler: CommandHandler {\n    static func run(_ arguments: RatesArguments, _ kit: CommandKit) async throws -> [Product] {\n        let rates = try InvoiceMath.rates()\n        let rows = rates.keys.sorted().map { [$0, FactValue.format(rates[$0] ?? 0)] }\n        return [.value(\"regions\", rows.count), .csv(\"rates\", columns: [\"region\", \"rate\"], rows: rows), .say(\"\\(rows.count) regions have a rate.\")]\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.handler",
+   "match": "The command: round\n",
+   "text": "```swift\nimport Foundation\n\n/// `round`: one amount, rounded half to even.\nenum RoundHandler: CommandHandler {\n    static func run(_ arguments: RoundArguments, _ kit: CommandKit) async throws -> [Product] {\n        let places = arguments.places ?? 2\n        guard (0...10).contains(places) else { throw CoreFailure.invalid(\"\\(places) places is out of range: give 0 to 10.\") }\n        let rounded = try Rounding.halfEven(value: arguments.value, places: places)\n        return [.value(\"rounded\", rounded), .say(\"\\(FactValue.format(arguments.value)) rounds half to even to \\(FactValue.format(rounded)).\")]\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.words",
+   "json": {
+    "name": "Invoice Totals",
+    "tagline": "Totals invoices with discounts and regional sales tax, rounded half to even to the cent.",
+    "keywords": [
+     "invoice",
+     "sales tax",
+     "discount",
+     "rounding",
+     "billing"
+    ],
+    "category": "productivity"
+   }
+  }
+ ]
+}

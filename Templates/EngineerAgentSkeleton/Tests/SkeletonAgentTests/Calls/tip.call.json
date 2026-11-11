@@ -1,0 +1,5 @@
+{
+  "command": "tip",
+  "input": {"command": "tip", "bill": 50, "service": "great"},
+  "expect": {"facts": {"tip": 11, "total": 61}, "tolerance": 0.001, "files": 0}
+}

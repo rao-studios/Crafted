@@ -1,0 +1,31 @@
+{
+  "scene": "lyon",
+  "about": "The Saône quay (Onboarding's band, Settings' strip). The wash opens across the sky, runs down the river, along the quay's facades, climbs the hill's woods, raises Saint-Jean, the tower and the basilica, and touches in the Virgin last.",
+  "size": [480, 270],
+  "seed": 17,
+  "rest": 0.5,
+  "feather": 0.014,
+  "wander": { "scale": 3.4, "octaves": 4, "amount": 0.2 },
+  "edge": { "scale": 10, "amount": 0.022 },
+  "regions": [
+    { "name": "sky", "shape": { "rect": [0, 0, 1, 0.5] }, "sweep": "out", "origin": [0.5, 0.18], "band": [0.0, 0.28] },
+    { "name": "river", "shape": { "rect": [0, 0.785, 1, 1] }, "sweep": "right", "band": [0.2, 0.4], "wander": 0.1 },
+    {
+      "name": "woods",
+      "shape": { "polygon": [[0, 0.5], [0.15, 0.44], [0.3, 0.42], [0.5, 0.37], [0.64, 0.33], [0.9, 0.32], [1, 0.33], [1, 0.64], [0, 0.64]] },
+      "sweep": "up",
+      "band": [0.52, 0.76]
+    },
+    { "name": "quay", "shape": { "rect": [0, 0.6, 1, 0.8] }, "sweep": "right", "band": [0.36, 0.58] },
+    { "name": "saint-jean", "shape": { "rect": [0.27, 0.52, 0.38, 0.79] }, "sweep": "up", "band": [0.7, 0.82], "wander": 0.06 },
+    { "name": "tower", "shape": { "rect": [0.885, 0.125, 0.93, 0.34] }, "sweep": "up", "band": [0.8, 0.92], "wander": 0.05 },
+    {
+      "name": "basilica",
+      "shape": { "polygon": [[0.648, 0.365], [0.648, 0.2], [0.684, 0.2], [0.684, 0.23], [0.731, 0.225], [0.8, 0.23], [0.8, 0.2], [0.865, 0.2], [0.865, 0.365]] },
+      "sweep": "up",
+      "band": [0.8, 0.94],
+      "wander": 0.06
+    },
+    { "name": "virgin", "shape": { "ellipse": [0.846, 0.19, 0.022, 0.045] }, "sweep": "out", "band": [0.94, 0.985], "wander": 0.03 }
+  ]
+}

@@ -1,0 +1,11 @@
+/* Velvet Night: plum and gold, set in Velour Grotesk. */
+:root {
+  --color-background: #1A0F1F;
+  --color-text: #F3E9DA;
+  --color-accent: #C9A45C;
+  --color-secondary: #B04A6A;
+  --font-display: "Velour Grotesk", "Didot", serif;
+  --font-body: "Velour Grotesk", sans-serif;
+}
+
+.title { font-family: var(--font-display); text-transform: none; }

@@ -2,13 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Craft</string>
+	<string>Crafted</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Project Folder</string>
+			<string>Folder</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>LSHandlerRank</key>
@@ -20,33 +22,29 @@
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>Craft</string>
+	<string>Crafted</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIconName</key>
 	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
-	<string>nyc.rao.craft</string>
+	<string>nyc.rao.crafted</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Craft</string>
+	<string>Crafted</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.0.0</string>
 	<key>CFBundleVersion</key>
-	<string>13</string>
-	<key>CraftChannel</key>
-	<string>beta</string>
-	<key>CraftFrameworksFeed</key>
-	<string>https://api.rao.nyc/storage/v1/object/public/craft-frameworks/catalog.json</string>
-	<key>CraftStoreFeed</key>
-	<string>https://api.rao.nyc/functions/v1/agents</string>
-	<key>CraftUpdateFeed</key>
-	<string>https://api.rao.nyc/storage/v1/object/public/craft-releases/latest.json</string>
+	<string>1</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.developer-tools</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>27.0</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2026 Ritesh Pakala Rao</string>
 </dict>

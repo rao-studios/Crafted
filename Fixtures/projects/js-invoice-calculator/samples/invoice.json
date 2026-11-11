@@ -1,0 +1,8 @@
+{
+  "lines": [
+    {"description": "Walnut desk", "quantity": 1, "unitPrice": 489.0},
+    {"description": "Desk lamp", "quantity": 2, "unitPrice": 34.5},
+    {"description": "Cable tray", "quantity": 3, "unitPrice": 12.25}
+  ],
+  "discount": {"percent": 10}
+}

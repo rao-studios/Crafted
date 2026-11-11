@@ -1,0 +1,15 @@
+/* Swiss Mono: the tokens every piece is set with. */
+:root {
+  --color-paper: #F7F7F2;
+  --color-ink: #111111;
+  --color-accent: #E30613;
+  --color-muted: #6B6B6B;
+  --font-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-heading: "Playfair Display", Georgia, serif;
+  --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --grid-columns: 12;
+  --page-margin: 7.5%;
+}
+
+h1 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
+.subhead { font-family: var(--font-heading); font-style: italic; }

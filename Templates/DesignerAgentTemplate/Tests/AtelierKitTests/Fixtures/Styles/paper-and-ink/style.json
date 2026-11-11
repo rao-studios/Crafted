@@ -1,0 +1,80 @@
+{
+  "format": "crafted-style/1",
+  "name": "Paper and Ink",
+  "credit": {
+    "designer": "Rao Studios",
+    "url": "https://rao.nyc",
+    "line": "the template's own style",
+    "colophon": "default-on",
+    "styleLicence": "CC-BY-4.0"
+  },
+  "colour": {
+    "grounds": ["light"],
+    "palette": [
+      {"id": "A", "hex": "#F5F1E8", "name": "paper", "weight": 0.52, "pieces": 0, "source": "declared"},
+      {"id": "B", "hex": "#1B1B1B", "name": "ink", "weight": 0.21, "pieces": 0, "source": "declared"},
+      {"id": "C", "hex": "#C2412A", "name": "vermilion", "weight": 0.08, "pieces": 0, "source": "declared"},
+      {"id": "D", "hex": "#3E5566", "name": "slate", "weight": 0.06, "pieces": 0, "source": "declared"},
+      {"id": "E", "hex": "#5F5A52", "name": "graphite", "weight": 0.05, "pieces": 0, "source": "declared"},
+      {"id": "F", "hex": "#CFC8B8", "name": "rule", "weight": 0.04, "pieces": 0, "source": "declared"},
+      {"id": "G", "hex": "#ECE5D6", "name": "card", "weight": 0.04, "pieces": 0, "source": "declared"},
+      {"id": "H", "hex": "#262523", "name": "night card", "weight": 0, "pieces": 0, "source": "declared"},
+      {"id": "I", "hex": "#B5AE9F", "name": "night muted", "weight": 0, "pieces": 0, "source": "declared"},
+      {"id": "J", "hex": "#4A4740", "name": "night rule", "weight": 0, "pieces": 0, "source": "declared"},
+      {"id": "K", "hex": "#E86A4F", "name": "ember", "weight": 0, "pieces": 0, "source": "declared"}
+    ],
+    "roles": {
+      "background": {"light": "A", "dark": "B"},
+      "surface": {"light": "G", "dark": "H"},
+      "ink": {"light": "B", "dark": "A"},
+      "inkMuted": {"light": "E", "dark": "I"},
+      "accent": {"light": "C", "dark": "K"},
+      "accentInk": {"light": "A", "dark": "B"},
+      "secondary": {"light": "D", "dark": "F"},
+      "rule": {"light": "F", "dark": "J"}
+    },
+    "gradients": [{"id": "dusk", "stops": ["C", "D"], "angle": 160}],
+    "proportions": {"A": 0.6, "B": 0.25, "C": 0.1, "D": 0.05},
+    "usage": ["Paper ground, ink type; vermilion for one thing a page wants seen first."]
+  },
+  "type": {
+    "families": [
+      {"family": "Iowan Old Style", "licence": "system", "bundled": false, "files": []},
+      {"family": "Avenir Next", "licence": "system", "bundled": false, "files": []}
+    ],
+    "roles": {
+      "display": {"family": "Iowan Old Style", "source": "system", "fallbacks": ["Georgia", "Times New Roman"], "class": "serif", "weight": 700, "style": "normal", "case": "none", "tracking": -0.015, "leading": 1.02},
+      "heading": {"family": "Iowan Old Style", "source": "system", "fallbacks": ["Georgia"], "class": "serif", "weight": 400, "style": "italic", "case": "none", "tracking": 0, "leading": 1.2},
+      "body": {"family": "Avenir Next", "source": "system", "fallbacks": ["Helvetica Neue", "Helvetica"], "class": "sans", "weight": 400, "style": "normal", "case": "none", "tracking": 0, "leading": 1.45},
+      "caption": {"family": "Avenir Next", "source": "system", "fallbacks": ["Helvetica Neue"], "class": "sans", "weight": 400, "style": "normal", "case": "none", "tracking": 0.01, "leading": 1.35},
+      "label": {"family": "Avenir Next", "source": "system", "fallbacks": ["Helvetica Neue"], "class": "sans", "weight": 600, "style": "normal", "case": "upper", "tracking": 0.14, "leading": 1.2},
+      "numeral": {"family": "Iowan Old Style", "source": "system", "fallbacks": ["Georgia"], "class": "serif", "weight": 700, "style": "normal", "case": "none", "tracking": -0.01, "leading": 1}
+    },
+    "scale": {"base": 16, "ratio": 1.25}
+  },
+  "space": {"unit": 8, "scale": [0.5, 1, 1.5, 2, 3, 4, 6, 8], "pageMargin": 0.075, "gutter": 0.03, "density": "balanced"},
+  "shape": {"radius": 2, "stroke": 1, "shadow": "none", "fills": "flat"},
+  "layout": {
+    "alignment": "left",
+    "symmetry": "asymmetric",
+    "grid": {"columns": 2},
+    "archetypes": [
+      {"engine": "hero", "for": ["poster", "socialcard", "story", "banner", "brochure"], "weight": 1, "headline": "bottom", "image": "top"},
+      {"engine": "split", "for": ["flyer", "businesscard", "slide", "banner"], "weight": 1, "headline": "middle", "image": "left"},
+      {"engine": "column", "for": ["onepager", "brochure", "flyer"], "weight": 0.9, "headline": "top", "image": "top"},
+      {"engine": "grid", "for": ["onepager", "brochure", "poster", "slide", "flyer"], "weight": 0.8, "headline": "top", "image": "top"}
+    ]
+  },
+  "imagery": {"kinds": ["photo", "illustration"], "treatments": ["framed"], "rules": ["Pictures sit in their own space; type never runs over them."], "placeholder": "gradient"},
+  "motifs": [
+    {"id": "rule-bar", "kind": "rule", "slot": "accent", "css": "background: var(--accent)", "use": "a short bar over the first line of a page"}
+  ],
+  "voice": {
+    "tone": ["plain", "warm", "exact"],
+    "headline": "A short sentence with one turn in it; sentence case; no exclamation marks.",
+    "vocabulary": ["made", "studio", "season", "open"],
+    "avoid": ["synergy", "game-changing", "unlock"],
+    "samples": []
+  },
+  "provenance": {"pieces": 0, "looked": 0, "models": [], "decisions": ["The template's own style, set by hand."]}
+}

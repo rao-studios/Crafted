@@ -1,0 +1,872 @@
+{
+ "format": "crafted-script/1",
+ "answers": [
+  {
+   "purpose": "engineer.brief",
+   "json": {
+    "title": "TextStats",
+    "summary": "A small Swift library that counts the words, sentences and syllables of a text and scores how easy it is to read: Flesch reading ease, the Flesch-Kincaid grade, and the minutes it takes at 238 words a minute. Syllables are vowel groups less a silent final e. It has XCTest tests.",
+    "purpose": "Measure a text's readability.",
+    "kind": "library",
+    "entry": [
+     "TextStats(text)"
+    ],
+    "languages": [
+     "swift"
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: Sources/TextStats/TextStats.swift (",
+   "json": {
+    "role": "logic",
+    "summary": "Counts words, sentences and syllables and scores readability.",
+    "entities": [
+     {
+      "name": "TextStats",
+      "kind": "type",
+      "lines": "4-48"
+     }
+    ],
+    "operations": [
+     {
+      "name": "init",
+      "signature": "init(_ text: String)",
+      "lines": "9-14",
+      "does": "Counts a text.",
+      "purity": "pure"
+     },
+     {
+      "name": "readingEase",
+      "signature": "readingEase: Double",
+      "lines": "17-20",
+      "does": "Flesch reading ease.",
+      "purity": "pure"
+     },
+     {
+      "name": "grade",
+      "signature": "grade: Double",
+      "lines": "23-26",
+      "does": "Flesch-Kincaid grade.",
+      "purity": "pure"
+     },
+     {
+      "name": "minutes",
+      "signature": "minutes: Double",
+      "lines": "29",
+      "does": "Minutes to read.",
+      "purity": "pure"
+     },
+     {
+      "name": "syllables",
+      "signature": "syllables(in word: String) -> Int",
+      "lines": "36-47",
+      "does": "Counts a word's syllables.",
+      "purity": "pure"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "Reading ease is 206.835 less 1.015 times words per sentence less 84.6 times syllables per word.",
+      "formula": "206.835 - 1.015 * Double(words) / Double(sentences) - 84.6 * Double(syllables) / Double(words)",
+      "lines": "19"
+     },
+     {
+      "statement": "The grade is 0.39 times words per sentence plus 11.8 times syllables per word less 15.59.",
+      "formula": "0.39 * Double(words) / Double(sentences) + 11.8 * Double(syllables) / Double(words) - 15.59",
+      "lines": "25"
+     },
+     {
+      "statement": "Reading takes a minute per 238 words.",
+      "formula": "Double(words) / 238",
+      "lines": "29"
+     },
+     {
+      "statement": "A silent final e is not a syllable.",
+      "formula": "word.hasSuffix(\"e\") && count > 1",
+      "lines": "45"
+     },
+     {
+      "statement": "Sentences end at \".!?\".",
+      "formula": "\".!?\".contains($0)",
+      "lines": "12"
+     }
+    ],
+    "inputs": [
+     "text"
+    ],
+    "outputs": [
+     "counts and scores"
+    ],
+    "spotted": [
+     {
+      "title": "score a text's readability",
+      "entry": "TextStats(text)"
+     },
+     {
+      "title": "count syllables",
+      "entry": "TextStats.syllables(in:)"
+     }
+    ],
+    "importance": 1.0,
+    "why": "The whole library."
+   }
+  },
+  {
+   "purpose": "engineer.reduce.domain",
+   "json": {
+    "nature": "business",
+    "kind": "library",
+    "entities": [
+     {
+      "name": "TextStats",
+      "fields": [
+       "words",
+       "sentences",
+       "syllables"
+      ],
+      "files": [
+       "Sources/TextStats/TextStats.swift"
+      ]
+     }
+    ],
+    "glossary": [
+     {
+      "term": "reading ease",
+      "meaning": "Flesch's score: higher is easier"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.usecases",
+   "json": {
+    "usecases": [
+     {
+      "id": "uc1",
+      "kind": "business",
+      "title": "Score a text's readability",
+      "actor": "a writer",
+      "trigger": {
+       "entry": "TextStats(text)",
+       "evidence": "Sources/TextStats/TextStats.swift:9-14"
+      },
+      "inputs": [
+       {
+        "name": "text",
+        "type": "string",
+        "source": "argument",
+        "example": "The cat sat on the mat."
+       }
+      ],
+      "steps": [
+       {
+        "text": "count, then score",
+        "evidence": "Sources/TextStats/TextStats.swift:17-26"
+       }
+      ],
+      "rules": [
+       "Flesch reading ease and grade"
+      ],
+      "outputs": [
+       {
+        "name": "scores",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [
+        "Tests/TextStatsTests/TextStatsTests.swift"
+       ],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 1.0,
+      "confidence": 0.9
+     },
+     {
+      "id": "uc2",
+      "kind": "business",
+      "title": "Count a word's syllables",
+      "actor": "a writer",
+      "trigger": {
+       "entry": "TextStats.syllables(in:)",
+       "evidence": "Sources/TextStats/TextStats.swift:36-47"
+      },
+      "inputs": [
+       {
+        "name": "text",
+        "type": "string",
+        "source": "argument",
+        "example": "The cat sat on the mat."
+       }
+      ],
+      "steps": [
+       {
+        "text": "vowel groups less a silent e",
+        "evidence": "Sources/TextStats/TextStats.swift:36-47"
+       }
+      ],
+      "rules": [
+       "a silent final e is not a syllable"
+      ],
+      "outputs": [
+       {
+        "name": "scores",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [
+        "Tests/TextStatsTests/TextStatsTests.swift"
+       ],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 0.6,
+      "confidence": 0.9
+     },
+     {
+      "id": "uc3",
+      "kind": "business",
+      "title": "Estimate reading time",
+      "actor": "a writer",
+      "trigger": {
+       "entry": "stats.minutes",
+       "evidence": "Sources/TextStats/TextStats.swift:28-29"
+      },
+      "inputs": [
+       {
+        "name": "text",
+        "type": "string",
+        "source": "argument",
+        "example": "The cat sat on the mat."
+       }
+      ],
+      "steps": [
+       {
+        "text": "words over 238",
+        "evidence": "Sources/TextStats/TextStats.swift:28-29"
+       }
+      ],
+      "rules": [
+       "238 words a minute"
+      ],
+      "outputs": [
+       {
+        "name": "scores",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [
+        "Tests/TextStatsTests/TextStatsTests.swift"
+       ],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 0.7,
+      "confidence": 0.9
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc1 (",
+   "json": {
+    "id": "uc1",
+    "confirmed": true,
+    "title": "Score a text's readability",
+    "notes": "As the lines say."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc2 (",
+   "json": {
+    "id": "uc2",
+    "confirmed": true,
+    "title": "Count a word's syllables",
+    "notes": "As the lines say."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc3 (",
+   "json": {
+    "id": "uc3",
+    "confirmed": true,
+    "title": "Estimate reading time",
+    "notes": "As the lines say."
+   }
+  },
+  {
+   "purpose": "engineer.interpret.whole",
+   "json": {
+    "name": "Readability",
+    "word": "readability",
+    "summary": "Measures a text's readability and counts a word's syllables.",
+    "commands": [
+     {
+      "name": "measure",
+      "summary": "Counts and scores a text or a file.",
+      "args": [
+       {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "note": "the text"
+       },
+       {
+        "name": "file",
+        "type": "path",
+        "required": false,
+        "note": "a text file in the project"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "value",
+        "what": "counts and scores"
+       },
+       {
+        "channel": "canvas",
+        "kind": "report",
+        "what": "the scores"
+       }
+      ],
+      "usecases": [
+       "uc1",
+       "uc3"
+      ]
+     },
+     {
+      "name": "syllables",
+      "summary": "A word's syllables.",
+      "args": [
+       {
+        "name": "word",
+        "type": "string",
+        "required": true,
+        "note": "one word"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "value",
+        "what": "the count"
+       }
+      ],
+      "usecases": [
+       "uc2"
+      ]
+     }
+    ],
+    "canvas": [
+     "the scores as a report"
+    ],
+    "handsOff": [],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "Sources/TextStats/TextStats.swift",
+      "lines": "1-48",
+      "how": "lift"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the analytics key in Secrets.swift",
+      "why": "it is a secret, and nothing reads it"
+     }
+    ],
+    "confidence": {
+     "score": 0.95,
+     "basis": "the source is Swift already: it is lifted, not ported"
+    },
+    "effort": {
+     "units": 1,
+     "sourceLines": 48,
+     "minutes": 5,
+     "risk": "low",
+     "hardest": "none"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.interpret.core",
+   "json": {
+    "name": "Reading Ease",
+    "word": "readingease",
+    "summary": "One score, deeply: Flesch reading ease of a text.",
+    "commands": [
+     {
+      "name": "score",
+      "summary": "A text's reading ease.",
+      "args": [
+       {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "note": "the text"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "value",
+        "what": "the score"
+       }
+      ],
+      "usecases": [
+       "uc1"
+      ]
+     }
+    ],
+    "canvas": [],
+    "handsOff": [],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "Sources/TextStats/TextStats.swift",
+      "lines": "1-48",
+      "how": "lift"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the analytics key in Secrets.swift",
+      "why": "it is a secret, and nothing reads it"
+     }
+    ],
+    "confidence": {
+     "score": 0.9,
+     "basis": "one formula"
+    },
+    "effort": {
+     "units": 1,
+     "sourceLines": 48,
+     "minutes": 5,
+     "risk": "low",
+     "hardest": "none"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.interpret.material",
+   "json": {
+    "name": "Readability Report",
+    "word": "readabilityreport",
+    "summary": "A file's readability as a Canvas report, handed on to an editor.",
+    "commands": [
+     {
+      "name": "report",
+      "summary": "A readability report of a file.",
+      "args": [
+       {
+        "name": "file",
+        "type": "path",
+        "required": true,
+        "note": "a text file"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "canvas",
+        "kind": "report",
+        "what": "the report"
+       }
+      ],
+      "usecases": [
+       "uc1",
+       "uc3"
+      ]
+     }
+    ],
+    "canvas": [
+     "the report"
+    ],
+    "handsOff": [
+     "the scores"
+    ],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "Sources/TextStats/TextStats.swift",
+      "lines": "1-48",
+      "how": "lift"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the analytics key in Secrets.swift",
+      "why": "it is a secret, and nothing reads it"
+     }
+    ],
+    "confidence": {
+     "score": 0.8,
+     "basis": "a report of the scores"
+    },
+    "effort": {
+     "units": 1,
+     "sourceLines": 48,
+     "minutes": 5,
+     "risk": "low",
+     "hardest": "none"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.plan",
+   "json": {
+    "summary": "measures a text's readability (words, sentences, syllables, Flesch reading ease and grade, minutes to read) and counts a word's syllables.",
+    "guide": "Tag readability to measure a text: give `text`, or a `file` in the project. Higher reading ease is easier; the grade is a school grade.",
+    "commands": [
+     {
+      "name": "measure",
+      "summary": "Counts and scores a text or a file.",
+      "usecases": [
+       "uc1",
+       "uc3"
+      ],
+      "args": [
+       {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "note": "the text to measure"
+       },
+       {
+        "name": "file",
+        "type": "path",
+        "required": false,
+        "note": "a text file in the project, when no text is given"
+       }
+      ],
+      "produces": [
+       {
+        "kind": "value",
+        "name": "readingEase"
+       },
+       {
+        "kind": "report",
+        "name": "readability"
+       }
+      ],
+      "uses": [
+       "Readability"
+      ],
+      "present": "output"
+     },
+     {
+      "name": "syllables",
+      "summary": "Counts a word's syllables.",
+      "usecases": [
+       "uc2"
+      ],
+      "args": [
+       {
+        "name": "word",
+        "type": "string",
+        "required": true,
+        "note": "one word"
+       }
+      ],
+      "produces": [
+       {
+        "kind": "value",
+        "name": "count"
+       }
+      ],
+      "uses": [
+       "Readability"
+      ],
+      "present": "output"
+     }
+    ],
+    "units": [
+     {
+      "unit": "Readability",
+      "kind": "lifted",
+      "summary": "The scores, through the lifted TextStats.",
+      "uses": [
+       "TextMeasure"
+      ],
+      "resources": [],
+      "calls": [],
+      "functions": [
+       {
+        "name": "measure",
+        "params": [
+         {
+          "name": "text",
+          "type": "String"
+         }
+        ],
+        "returns": "TextMeasure",
+        "rules": [
+         "as TextStats computes them"
+        ]
+       },
+       {
+        "name": "syllables",
+        "params": [
+         {
+          "name": "word",
+          "type": "String"
+         }
+        ],
+        "returns": "Int",
+        "rules": [
+         "vowel groups less a silent final e, at least one"
+        ]
+       }
+      ],
+      "evidence": [
+       "Sources/TextStats/TextStats.swift:1-48"
+      ]
+     }
+    ],
+    "types": [
+     {
+      "name": "TextMeasure",
+      "kind": "struct",
+      "note": "A text's counts and scores.",
+      "fields": [
+       {
+        "name": "words",
+        "type": "Int"
+       },
+       {
+        "name": "sentences",
+        "type": "Int"
+       },
+       {
+        "name": "syllables",
+        "type": "Int"
+       },
+       {
+        "name": "readingEase",
+        "type": "Double"
+       },
+       {
+        "name": "grade",
+        "type": "Double"
+       },
+       {
+        "name": "minutes",
+        "type": "Double"
+       }
+      ]
+     }
+    ],
+    "resources": [],
+    "lifts": [
+     {
+      "source": "Sources/TextStats/TextStats.swift",
+      "name": "TextStats.swift"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.vectors",
+   "match": "The unit: Readability\n",
+   "json": {
+    "vectors": [
+     {
+      "name": "nine words",
+      "function": "measure",
+      "args": {
+       "text": "The cat sat on the mat. It was happy!"
+      },
+      "origin": "source-test",
+      "evidence": "Tests/TextStatsTests/TextStatsTests.swift:5-9",
+      "property": {
+       "kind": "equals",
+       "path": "words",
+       "value": 9
+      }
+     },
+     {
+      "name": "two sentences",
+      "function": "measure",
+      "args": {
+       "text": "The cat sat on the mat. It was happy!"
+      },
+      "origin": "source-test",
+      "evidence": "Tests/TextStatsTests/TextStatsTests.swift:5-9",
+      "property": {
+       "kind": "equals",
+       "path": "sentences",
+       "value": 2
+      }
+     },
+     {
+      "name": "happy has two syllables",
+      "function": "syllables",
+      "args": {
+       "word": "happy"
+      },
+      "origin": "source-test",
+      "evidence": "Tests/TextStatsTests/TextStatsTests.swift:11-14",
+      "expect": 2
+     },
+     {
+      "name": "make has one",
+      "function": "syllables",
+      "args": {
+       "word": "make"
+      },
+      "origin": "source-test",
+      "evidence": "Tests/TextStatsTests/TextStatsTests.swift:11-14",
+      "expect": 1
+     },
+     {
+      "name": "238 words take a minute",
+      "function": "measure",
+      "args": {
+       "text": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word "
+      },
+      "origin": "source-test",
+      "evidence": "Tests/TextStatsTests/TextStatsTests.swift:16-18",
+      "property": {
+       "kind": "equals",
+       "path": "minutes",
+       "value": 1
+      },
+      "tolerance": 0.0001
+     },
+     {
+      "name": "a harder passage",
+      "function": "measure",
+      "args": {
+       "text": "Readability formulas estimate how difficult a passage is to understand. Shorter sentences help."
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "approx",
+       "path": "readingEase",
+       "value": 11.514423076923123
+      },
+      "tolerance": 1e-06
+     },
+     {
+      "name": "its grade",
+      "function": "measure",
+      "args": {
+       "text": "Readability formulas estimate how difficult a passage is to understand. Shorter sentences help."
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "approx",
+       "path": "grade",
+       "value": 13.268076923076926
+      },
+      "tolerance": 1e-06
+     },
+     {
+      "name": "readability has five",
+      "function": "syllables",
+      "args": {
+       "word": "readability"
+      },
+      "origin": "derived",
+      "expect": 5
+     },
+     {
+      "name": "the same text, the same scores",
+      "function": "measure",
+      "args": {
+       "text": "The cat sat on the mat. It was happy!"
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "deterministic"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.calls",
+   "match": "The command: measure\n",
+   "json": {
+    "command": "measure",
+    "input": {
+     "command": "measure",
+     "text": "The cat sat on the mat. It was happy!"
+    },
+    "expect": {
+     "facts": {
+      "words": 9,
+      "sentences": 2
+     },
+     "files": 1
+    }
+   }
+  },
+  {
+   "purpose": "engineer.calls",
+   "match": "The command: syllables\n",
+   "json": {
+    "command": "syllables",
+    "input": {
+     "command": "syllables",
+     "word": "happy"
+    },
+    "expect": {
+     "facts": {
+      "count": 2
+     },
+     "files": 0
+    }
+   }
+  },
+  {
+   "purpose": "engineer.unit",
+   "match": "The unit: Readability\n",
+   "text": "```swift\nimport Foundation\n\n/// The scores through the lifted TextStats (Lifted/TextStats.swift), as the source computes them.\npublic enum Readability: ReadabilityContract {\n    public static func measure(text: String) throws -> TextMeasure {\n        let stats = TextStats(text)\n        return TextMeasure(words: stats.words, sentences: stats.sentences, syllables: stats.syllables,\n                           readingEase: stats.readingEase, grade: stats.grade, minutes: stats.minutes)\n    }\n\n    public static func syllables(word: String) throws -> Int {\n        TextStats.syllables(in: word.lowercased())\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.handler",
+   "match": "The command: measure\n",
+   "text": "```swift\nimport Foundation\n\n/// `measure`: a text's counts and scores as facts, and as a report.\nenum MeasureHandler: CommandHandler {\n    static func run(_ arguments: MeasureArguments, _ kit: CommandKit) async throws -> [Product] {\n        let text: String\n        if let given = arguments.text {\n            text = given\n        } else if let file = arguments.file {\n            text = try kit.text(file)\n        } else {\n            throw CoreFailure.invalid(\"Give `text`, or a `file` in the project, to measure.\")\n        }\n        let measure = try Readability.measure(text: text)\n        let ease = (measure.readingEase * 10).rounded() / 10\n        let grade = (measure.grade * 10).rounded() / 10\n        let report = Report(name: \"readability\", title: \"Readability\", subtitle: \"\\(measure.words) words in \\(measure.sentences) sentences\", blocks: [\n            .facts([Fact(\"reading ease\", .number(ease)), Fact(\"grade\", .number(grade)), Fact(\"minutes\", .number((measure.minutes * 10).rounded() / 10))]),\n            .bars(title: \"Counts\", items: [ReportBar(\"words\", Double(measure.words)), ReportBar(\"sentences\", Double(measure.sentences)),\n                                           ReportBar(\"syllables\", Double(measure.syllables))]),\n            .note(\"Flesch reading ease: higher is easier. The grade is a school grade.\"),\n        ])\n        return [\n            .value(\"words\", measure.words), .value(\"sentences\", measure.sentences), .value(\"syllables\", measure.syllables),\n            .value(\"readingEase\", ease), .value(\"grade\", grade), .value(\"minutes\", measure.minutes, unit: \"min\"), .report(report),\n            .say(\"Reading ease \\(FactValue.format(ease)), grade \\(FactValue.format(grade)).\"),\n        ]\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.handler",
+   "match": "The command: syllables\n",
+   "text": "```swift\nimport Foundation\n\n/// `syllables`: one word's syllables.\nenum SyllablesHandler: CommandHandler {\n    static func run(_ arguments: SyllablesArguments, _ kit: CommandKit) async throws -> [Product] {\n        let count = try Readability.syllables(word: arguments.word)\n        return [.value(\"count\", count), .say(\"\\(arguments.word) has \\(count) syllable\\(count == 1 ? \"\" : \"s\").\")]\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.words",
+   "json": {
+    "name": "Readability",
+    "tagline": "Scores how easy a text is to read: Flesch reading ease, grade, and minutes to read.",
+    "keywords": [
+     "readability",
+     "writing",
+     "flesch",
+     "syllables"
+    ],
+    "category": "writing"
+   }
+  }
+ ]
+}

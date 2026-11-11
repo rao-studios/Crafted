@@ -62,8 +62,17 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 # Crafted
-build/
+# Build output: SwiftPM's, each track's scratch builds, and the packaged app, pkg and icon sheets.
+.build/
 .build-*/
+build/
+# Editors and agents.
+.vscode/
+.claude/
 .swiftpm/
+.DS_Store
+# Kept on the maintainer's Mac: the installer's packaging.
+Support/Pkg/
+# A template's own builds.
 Templates/*/.build/
 Templates/*/.swiftpm/

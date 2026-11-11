@@ -1,0 +1,662 @@
+{
+ "format": "crafted-script/1",
+ "answers": [
+  {
+   "purpose": "designer.look",
+   "match": "Piece: gala-poster.png",
+   "json": {
+    "piece": {
+     "kind": "poster",
+     "confidence": "high"
+    },
+    "ground": "dark",
+    "colourRoles": {
+     "background": "A",
+     "ink": "D",
+     "accent": [
+      "C"
+     ],
+     "secondary": [
+      "E"
+     ],
+     "muted": []
+    },
+    "layout": {
+     "structure": "hero",
+     "columns": 1,
+     "alignment": "left",
+     "margins": "generous",
+     "density": "sparse",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "top",
+      "scale": "huge",
+      "case": "title",
+      "treatment": "stacked"
+     },
+     "emphasis": "colour"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "high"
+     },
+     {
+      "role": "heading",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "italic",
+      "tracking": "normal",
+      "contrast": "high"
+     },
+     {
+      "role": "body",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "high"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a thin rose frame",
+      "kind": "frame",
+      "where": "frame"
+     },
+     {
+      "name": "a short gold rule",
+      "kind": "rule",
+      "where": "divider"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "hairline",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "luxurious",
+     "elegant",
+     "festive"
+    ],
+    "marks": [],
+    "people": "none",
+    "notes": ""
+   }
+  },
+  {
+   "purpose": "designer.look",
+   "match": "Piece: invite-acme.png",
+   "json": {
+    "piece": {
+     "kind": "invitation",
+     "confidence": "high"
+    },
+    "ground": "dark",
+    "colourRoles": {
+     "background": "A",
+     "ink": "D",
+     "accent": [
+      "C"
+     ],
+     "secondary": [
+      "E"
+     ],
+     "muted": []
+    },
+    "layout": {
+     "structure": "centre",
+     "columns": 1,
+     "alignment": "left",
+     "margins": "generous",
+     "density": "sparse",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "top",
+      "scale": "huge",
+      "case": "title",
+      "treatment": "stacked"
+     },
+     "emphasis": "colour"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "high"
+     },
+     {
+      "role": "heading",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "italic",
+      "tracking": "normal",
+      "contrast": "high"
+     },
+     {
+      "role": "body",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "high"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a short rose rule",
+      "kind": "rule",
+      "where": "divider"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "hairline",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "elegant",
+     "festive",
+     "quiet"
+    ],
+    "marks": [
+     {
+      "what": "client-logo",
+      "where": "bottom-right",
+      "text": "ACME CORP"
+     }
+    ],
+    "people": "none",
+    "notes": "A client's logo sits in the lower right corner."
+   }
+  },
+  {
+   "purpose": "designer.look",
+   "match": "Piece: menu.pdf, page 1",
+   "json": {
+    "piece": {
+     "kind": "menu",
+     "confidence": "high"
+    },
+    "ground": "dark",
+    "colourRoles": {
+     "background": "A",
+     "ink": "D",
+     "accent": [
+      "C"
+     ],
+     "secondary": [
+      "E"
+     ],
+     "muted": []
+    },
+    "layout": {
+     "structure": "column",
+     "columns": 1,
+     "alignment": "left",
+     "margins": "regular",
+     "density": "balanced",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "top",
+      "scale": "large",
+      "case": "title",
+      "treatment": "plain"
+     },
+     "emphasis": "colour"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "high"
+     },
+     {
+      "role": "heading",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "italic",
+      "tracking": "normal",
+      "contrast": "high"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a thin rose frame",
+      "kind": "frame",
+      "where": "frame"
+     },
+     {
+      "name": "a gold rule under the title",
+      "kind": "rule",
+      "where": "divider"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "hairline",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "elegant",
+     "calm"
+    ],
+    "marks": [],
+    "people": "none",
+    "notes": ""
+   }
+  },
+  {
+   "purpose": "designer.look",
+   "match": "Piece: menu.pdf, page 2",
+   "json": {
+    "piece": {
+     "kind": "menu",
+     "confidence": "high"
+    },
+    "ground": "dark",
+    "colourRoles": {
+     "background": "A",
+     "ink": "D",
+     "accent": [
+      "C"
+     ],
+     "secondary": [
+      "E"
+     ],
+     "muted": []
+    },
+    "layout": {
+     "structure": "column",
+     "columns": 1,
+     "alignment": "left",
+     "margins": "regular",
+     "density": "balanced",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "top",
+      "scale": "large",
+      "case": "title",
+      "treatment": "plain"
+     },
+     "emphasis": "colour"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "high"
+     },
+     {
+      "role": "heading",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "italic",
+      "tracking": "normal",
+      "contrast": "high"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a thin rose frame",
+      "kind": "frame",
+      "where": "frame"
+     },
+     {
+      "name": "a gold rule under the title",
+      "kind": "rule",
+      "where": "divider"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "hairline",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "elegant",
+     "calm"
+    ],
+    "marks": [],
+    "people": "none",
+    "notes": ""
+   }
+  },
+  {
+   "purpose": "designer.synth.colour",
+   "json": {
+    "roles": {
+     "background": {
+      "light": "D",
+      "dark": "A"
+     },
+     "surface": {
+      "light": "D",
+      "dark": "B"
+     },
+     "ink": {
+      "light": "A",
+      "dark": "D"
+     },
+     "inkMuted": {
+      "light": "B",
+      "dark": "E"
+     },
+     "accent": {
+      "light": "C",
+      "dark": "C"
+     },
+     "accentInk": {
+      "light": "A",
+      "dark": "A"
+     },
+     "secondary": {
+      "light": "E",
+      "dark": "E"
+     },
+     "rule": {
+      "light": "C",
+      "dark": "C"
+     }
+    },
+    "gradients": [
+     {
+      "id": "dusk",
+      "stops": [
+       "A",
+       "E"
+      ],
+      "angle": 160
+     }
+    ],
+    "usage": [
+     "Plum is the room, cream the voice, gold the one thing that catches the light; rose only frames."
+    ]
+   }
+  },
+  {
+   "purpose": "designer.synth.type",
+   "json": {
+    "roles": {
+     "display": {
+      "family": "Didot",
+      "class": "serif",
+      "weight": 700,
+      "style": "normal",
+      "case": "none",
+      "tracking": 0,
+      "leading": 0.98
+     },
+     "heading": {
+      "family": "Didot",
+      "class": "serif",
+      "weight": 400,
+      "style": "italic",
+      "case": "none",
+      "tracking": 0,
+      "leading": 1.2
+     },
+     "body": {
+      "family": "Didot",
+      "class": "serif",
+      "weight": 400,
+      "style": "normal",
+      "case": "none",
+      "tracking": 0,
+      "leading": 1.45
+     },
+     "caption": {
+      "family": "Didot",
+      "class": "serif",
+      "weight": 400,
+      "style": "italic",
+      "case": "none",
+      "tracking": 0,
+      "leading": 1.3
+     },
+     "label": {
+      "family": "Didot",
+      "class": "serif",
+      "weight": 400,
+      "style": "normal",
+      "case": "upper",
+      "tracking": 0.12,
+      "leading": 1.2
+     },
+     "numeral": {
+      "family": "Didot",
+      "class": "serif",
+      "weight": 700,
+      "style": "normal",
+      "case": "none",
+      "tracking": 0,
+      "leading": 1
+     }
+    },
+    "ratio": 1.414
+   }
+  },
+  {
+   "purpose": "designer.synth.layout",
+   "json": {
+    "alignment": "left",
+    "symmetry": "asymmetric",
+    "density": "sparse",
+    "columns": 2,
+    "archetypes": [
+     {
+      "engine": "hero",
+      "for": [
+       "poster",
+       "socialcard",
+       "story",
+       "banner",
+       "brochure"
+      ],
+      "weight": 1.2,
+      "headline": "middle",
+      "image": "top"
+     },
+     {
+      "engine": "column",
+      "for": [
+       "onepager",
+       "brochure",
+       "flyer"
+      ],
+      "weight": 1,
+      "headline": "top",
+      "image": "top"
+     },
+     {
+      "engine": "split",
+      "for": [
+       "businesscard",
+       "slide",
+       "flyer"
+      ],
+      "weight": 1,
+      "headline": "middle",
+      "image": "right"
+     },
+     {
+      "engine": "grid",
+      "for": [
+       "onepager",
+       "slide"
+      ],
+      "weight": 0.7,
+      "headline": "top",
+      "image": "top"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "designer.synth.imagery",
+   "once": true,
+   "json": {
+    "kinds": [
+     "none"
+    ],
+    "placeholder": "gradient",
+    "motifs": [
+     {
+      "id": "velvet",
+      "kind": "texture",
+      "slot": "background",
+      "css": "background: url(https://example.com/velvet.png)",
+      "use": "behind everything"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "designer.synth.imagery",
+   "json": {
+    "kinds": [
+     "none"
+    ],
+    "treatments": [
+     "tinted"
+    ],
+    "rules": [
+     "Pictures sit inside the frame, tinted toward plum."
+    ],
+    "placeholder": "gradient",
+    "motifs": [
+     {
+      "id": "rose-frame",
+      "kind": "frame",
+      "slot": "frame",
+      "css": "border: 2px solid var(--secondary)",
+      "use": "a thin frame inside the margin"
+     },
+     {
+      "id": "gold-rule",
+      "kind": "rule",
+      "slot": "divider",
+      "css": "border-top: 1px solid var(--accent); width: 40%",
+      "use": "a short gold rule between parts"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "designer.synth.voice",
+   "json": {
+    "tone": [
+     "elegant",
+     "hushed",
+     "festive"
+    ],
+    "headline": "A short line in title case, as on an engraved card.",
+    "vocabulary": [
+     "evening",
+     "velvet",
+     "gold",
+     "dinner",
+     "invited"
+    ],
+    "avoid": [
+     "deal",
+     "cheap",
+     "hurry"
+    ],
+    "samples": []
+   }
+  },
+  {
+   "purpose": "designer.words",
+   "json": {
+    "style": "Velvet Night",
+    "tagline": "Invitations, posters and menus in plum and gold, for evenings that dress up.",
+    "keywords": [
+     "invitation",
+     "menu",
+     "gala",
+     "elegant",
+     "dark"
+    ]
+   }
+  }
+ ]
+}

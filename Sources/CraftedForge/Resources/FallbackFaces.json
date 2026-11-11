@@ -1,0 +1,21 @@
+{
+  "format": "crafted-fallback-faces/1",
+  "note": "Faces that stand in for a family that cannot ship, by class and kind. Every one is a macOS system face, so a generated agent draws with it on any Mac and ships no file.",
+  "faces": {
+    "serif": ["Iowan Old Style", "Georgia", "Times New Roman"],
+    "serif/didone": ["Didot", "Bodoni 72", "Georgia"],
+    "serif/transitional": ["Baskerville", "Georgia", "Times New Roman"],
+    "serif/old-style": ["Iowan Old Style", "Palatino", "Georgia"],
+    "slab": ["Rockwell", "American Typewriter", "Courier New"],
+    "sans": ["Helvetica Neue", "Helvetica", "Arial"],
+    "sans/geometric": ["Futura", "Avenir Next", "Helvetica Neue"],
+    "sans/grotesque": ["Helvetica Neue", "Arial", "Helvetica"],
+    "sans/neo-grotesque": ["Helvetica Neue", "Arial", "Helvetica"],
+    "sans/humanist": ["Gill Sans", "Optima", "Avenir Next"],
+    "sans/condensed": ["Avenir Next Condensed", "Helvetica Neue", "Arial Narrow"],
+    "sans/rounded": ["Arial Rounded MT Bold", "Avenir Next", "Helvetica Neue"],
+    "mono": ["Menlo", "SF Mono", "Courier New"],
+    "script": ["Snell Roundhand", "Apple Chancery", "Zapfino"],
+    "display": ["Futura", "Avenir Next", "Helvetica Neue"]
+  }
+}

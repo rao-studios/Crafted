@@ -1,0 +1,52 @@
+{
+  "format": "crafted-style/1",
+  "name": "Neon Dusk",
+  "credit": {"designer": "Test Studio Neon", "colophon": "default-on"},
+  "colour": {
+    "grounds": ["dark", "dark", "light"],
+    "palette": [
+      {"id": "A", "hex": "#0E0B1F", "name": "night", "weight": 0.55},
+      {"id": "B", "hex": "#F4F1FF", "name": "moon", "weight": 0.2},
+      {"id": "C", "hex": "#FF4FA3", "name": "neon pink", "weight": 0.12},
+      {"id": "D", "hex": "#33E1FF", "name": "cyan", "weight": 0.08},
+      {"id": "E", "hex": "#1C1736", "name": "dusk", "weight": 0.05},
+      {"id": "F", "hex": "#A9A3C9", "name": "haze", "weight": 0.0}
+    ],
+    "roles": {
+      "background": {"light": "B", "dark": "A"},
+      "surface": {"light": "B", "dark": "E"},
+      "ink": {"light": "A", "dark": "B"},
+      "inkMuted": {"light": "E", "dark": "F"},
+      "accent": {"light": "C", "dark": "C"},
+      "accentInk": {"light": "A", "dark": "A"},
+      "secondary": {"light": "D", "dark": "D"},
+      "rule": {"light": "F", "dark": "E"}
+    },
+    "gradients": [{"id": "glow", "stops": ["C", "D"], "angle": 120}]
+  },
+  "type": {
+    "families": [{"family": "Futura", "licence": "system"}, {"family": "Menlo", "licence": "system"}],
+    "roles": {
+      "display": {"family": "Futura", "source": "system", "fallbacks": ["Avenir Next"], "class": "sans", "weight": 700, "case": "upper", "tracking": 0.04, "leading": 1.0},
+      "heading": {"family": "Futura", "source": "system", "class": "sans", "weight": 500, "leading": 1.15},
+      "body": {"family": "Avenir Next", "source": "system", "fallbacks": ["Helvetica Neue"], "class": "sans", "weight": 400, "leading": 1.4},
+      "label": {"family": "Menlo", "source": "system", "class": "mono", "weight": 400, "case": "upper", "tracking": 0.2},
+      "numeral": {"family": "Futura", "source": "system", "class": "sans", "weight": 700}
+    },
+    "scale": {"base": 17, "ratio": 1.414}
+  },
+  "space": {"pageMargin": 0.09, "gutter": 0.04, "density": "sparse"},
+  "shape": {"radius": 18, "stroke": 1, "shadow": "soft", "fills": "gradient"},
+  "layout": {
+    "alignment": "centre", "symmetry": "symmetric", "grid": {"columns": 2},
+    "archetypes": [
+      {"engine": "hero", "for": [], "weight": 1, "headline": "middle"},
+      {"engine": "grid", "for": ["onepager", "brochure", "flyer", "slide"], "weight": 1.1},
+      {"engine": "split", "for": ["businesscard", "banner"], "weight": 1.3, "image": "right"}
+    ]
+  },
+  "imagery": {"kinds": ["gradient"], "treatments": ["duotone"], "placeholder": "duotone"},
+  "motifs": [{"id": "glow", "kind": "gradient", "slot": "background", "css": "background: radial-gradient(circle at 85% 10%, rgba(255,79,163,.28), transparent 45%)"},
+             {"id": "corner-ring", "kind": "shape", "slot": "corner", "css": "border: 2px solid var(--secondary); border-radius: 50%; transform: translate(35%, -35%)"}],
+  "voice": {"tone": ["electric", "nocturnal"], "headline": "Two to four words, all capitals.", "avoid": ["synergy"]}
+}

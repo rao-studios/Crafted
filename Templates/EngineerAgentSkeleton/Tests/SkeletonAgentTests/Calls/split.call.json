@@ -1,0 +1,5 @@
+{
+  "command": "split",
+  "input": {"command": "split", "bill": 84.5, "people": 3, "percent": 20},
+  "expect": {"facts": {"total": 101.4, "perPerson": 33.8}, "tolerance": 0.001, "files": 2, "notes": ["split 3 ways"]}
+}

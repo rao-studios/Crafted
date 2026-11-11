@@ -1,0 +1,50 @@
+{
+  "format": "crafted-style/1",
+  "name": "Ink Press",
+  "credit": {"designer": "Test Studio Ink", "url": "https://example.com/ink", "colophon": "required", "styleLicence": "CC-BY-4.0"},
+  "colour": {
+    "grounds": ["light", "light"],
+    "palette": [
+      {"id": "A", "hex": "#FBF7EE", "name": "cream", "weight": 0.6, "source": "measured"},
+      {"id": "B", "hex": "#101010", "name": "black", "weight": 0.25, "source": "measured"},
+      {"id": "C", "hex": "#B3261E", "name": "press red", "weight": 0.1, "source": "declared"},
+      {"id": "D", "hex": "#7A7366", "name": "warm grey", "weight": 0.03, "source": "measured"},
+      {"id": "E", "hex": "#E9E1CF", "name": "oat", "weight": 0.02, "source": "measured"}
+    ],
+    "roles": {
+      "background": {"light": "A", "dark": "B"},
+      "surface": {"light": "E", "dark": "B"},
+      "ink": {"light": "B", "dark": "A"},
+      "inkMuted": {"light": "D", "dark": "E"},
+      "accent": {"light": "C", "dark": "C"},
+      "accentInk": {"light": "A", "dark": "A"},
+      "secondary": {"light": "B", "dark": "E"},
+      "rule": {"light": "B", "dark": "D"}
+    }
+  },
+  "type": {
+    "families": [{"family": "Playfair Display", "licence": "OFL-1.1", "bundled": true, "files": ["Fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf"]}],
+    "roles": {
+      "display": {"family": "Playfair Display", "source": "bundled", "fallbacks": ["Georgia"], "class": "serif", "weight": 800, "style": "italic", "case": "none", "tracking": -0.02, "leading": 0.98},
+      "heading": {"family": "Playfair Display", "source": "bundled", "fallbacks": ["Georgia"], "class": "serif", "weight": 500, "style": "italic", "leading": 1.15},
+      "body": {"family": "Georgia", "source": "system", "fallbacks": ["Times New Roman"], "class": "serif", "weight": 400, "leading": 1.5},
+      "label": {"family": "Courier New", "source": "system", "fallbacks": ["Courier"], "class": "mono", "weight": 700, "case": "upper", "tracking": 0.08},
+      "caption": {"family": "Georgia", "source": "system", "class": "serif", "weight": 400, "style": "italic"}
+    },
+    "scale": {"base": 15, "ratio": 1.333}
+  },
+  "space": {"pageMargin": 0.06, "gutter": 0.025, "density": "dense"},
+  "shape": {"radius": 0, "stroke": 2, "shadow": "hard", "fills": "flat"},
+  "layout": {
+    "alignment": "left", "symmetry": "asymmetric", "grid": {"columns": 3},
+    "archetypes": [
+      {"engine": "column", "for": [], "weight": 1, "headline": "top"},
+      {"engine": "hero", "for": ["poster", "socialcard", "story", "banner"], "weight": 1.2, "headline": "top"},
+      {"engine": "grid", "for": ["onepager", "brochure", "slide", "flyer"], "weight": 0.9}
+    ]
+  },
+  "imagery": {"kinds": ["illustration"], "treatments": ["monochrome"], "placeholder": "pattern"},
+  "motifs": [{"id": "double-rule", "kind": "rule", "slot": "divider", "css": "border-top: 3px double var(--ink); background: url(http://evil.example/x.png)"},
+             {"id": "frame", "kind": "frame", "slot": "frame", "css": "border: 1px solid var(--ink)"}],
+  "voice": {"tone": ["dry", "bookish"], "headline": "Short, declarative, no question marks."}
+}

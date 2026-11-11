@@ -1,0 +1,67 @@
+{
+  "summary": "works out tips and splits bills: the tip at a percentage or a level of service, the total, and each person's share to the cent.",
+  "guide": "Tag skeletonword to work out a tip or split a bill. Give the bill as a number in its own currency; the agent never converts currencies.",
+  "commands": [
+    {
+      "name": "tip",
+      "summary": "The tip and the total for a bill, at a percentage or a level of service.",
+      "usecases": ["uc1"],
+      "args": [
+        {"name": "bill", "type": "number", "required": true, "note": "the bill before the tip, in its currency"},
+        {"name": "percent", "type": "number", "note": "the tip as a percentage of the bill; left out, the level of service sets it"},
+        {"name": "service", "type": "choice", "values": ["poor", "fair", "good", "great"], "note": "the level of service when no percent is given: good when left out"}
+      ],
+      "produces": [{"kind": "value", "name": "tip"}, {"kind": "value", "name": "total"}],
+      "uses": ["TipMath"],
+      "present": "output"
+    },
+    {
+      "name": "split",
+      "summary": "A bill and its tip split between people, each share to the cent.",
+      "usecases": ["uc2"],
+      "args": [
+        {"name": "bill", "type": "number", "required": true, "note": "the bill before the tip, in its currency"},
+        {"name": "people", "type": "integer", "required": true, "note": "how many people share the bill, one or more"},
+        {"name": "percent", "type": "number", "note": "the tip as a percentage of the bill; left out, the level of service sets it"},
+        {"name": "service", "type": "choice", "values": ["poor", "fair", "good", "great"], "note": "the level of service when no percent is given: good when left out"}
+      ],
+      "produces": [{"kind": "value", "name": "total"}, {"kind": "csv", "name": "shares"}, {"kind": "report", "name": "split"}],
+      "uses": ["TipMath"],
+      "present": "output"
+    }
+  ],
+  "units": [
+    {
+      "unit": "TipMath",
+      "kind": "logic",
+      "summary": "Tips, totals and shares, to the cent.",
+      "uses": ["TipBreakdown"],
+      "resources": ["tip-presets.json"],
+      "functions": [
+        {"name": "percent", "params": [{"label": "for", "name": "service", "type": "String"}], "returns": "Double",
+         "rules": ["The percentage for a level of service, from tip-presets.json: poor 10, fair 15, good 18, great 22."]},
+        {"name": "breakdown", "params": [{"name": "bill", "type": "Double"}, {"name": "percent", "type": "Double"}, {"name": "people", "type": "Int"}],
+         "returns": "TipBreakdown",
+         "rules": ["The tip is the bill times the percentage over 100, to the cent; the total is the bill plus the tip.", "A negative bill, a percentage outside 0 to 100, or fewer than one person is refused."]},
+        {"name": "shares", "params": [{"name": "total", "type": "Double"}, {"name": "people", "type": "Int"}], "returns": "[Double]",
+         "rules": ["Shares are whole cents and sum to the total; the first shares take the cents left over."]}
+      ],
+      "evidence": ["tipcalc.py:1-40"]
+    }
+  ],
+  "types": [
+    {
+      "name": "TipBreakdown",
+      "kind": "struct",
+      "note": "A bill with its tip worked out.",
+      "fields": [
+        {"name": "bill", "type": "Double"},
+        {"name": "percent", "type": "Double"},
+        {"name": "tip", "type": "Double"},
+        {"name": "total", "type": "Double"},
+        {"name": "perPerson", "type": "Double", "note": "the total over the people, to the cent"}
+      ]
+    }
+  ],
+  "resources": [{"source": "presets.json", "name": "tip-presets.json"}]
+}

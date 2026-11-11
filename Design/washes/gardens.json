@@ -1,0 +1,34 @@
+{
+  "scene": "gardens",
+  "about": "Fourvière from the gardens, the live hero. The wash opens from the sun's glow across the sky, crosses the river and the city along the quay, climbs the wooded hill, raises the basilica from its terrace, and touches in the gilded Virgin last.",
+  "size": [480, 270],
+  "seed": 4,
+  "rest": 0.5,
+  "feather": 0.014,
+  "wander": { "scale": 3.4, "octaves": 4, "amount": 0.2 },
+  "edge": { "scale": 10, "amount": 0.022 },
+  "regions": [
+    { "name": "sky", "shape": { "rect": [0, 0, 1, 0.66] }, "sweep": "out", "origin": [0.6, 0.24], "band": [0.0, 0.3] },
+    { "name": "ground", "shape": { "rect": [0, 0.86, 1, 1] }, "sweep": "left", "band": [0.5, 0.62] },
+    { "name": "city", "shape": { "rect": [0.44, 0.55, 1, 0.9] }, "sweep": "right", "band": [0.3, 0.52] },
+    { "name": "river", "shape": { "rect": [0.44, 0.735, 1, 0.815] }, "sweep": "right", "band": [0.25, 0.38], "wander": 0.08 },
+    {
+      "name": "woods",
+      "shape": {
+        "polygon": [[0, 0.54], [0.04, 0.53], [0.09, 0.515], [0.17, 0.5], [0.3, 0.495], [0.42, 0.5], [0.5, 0.515], [0.545, 0.54], [0.575, 0.6], [0.53, 0.66], [0.49, 0.78], [0.47, 0.9], [0.52, 1], [0, 1]]
+      },
+      "sweep": "up",
+      "band": [0.52, 0.78]
+    },
+    {
+      "name": "basilica",
+      "shape": {
+        "polygon": [[0.132, 0.53], [0.132, 0.225], [0.164, 0.225], [0.164, 0.3], [0.174, 0.3], [0.174, 0.205], [0.248, 0.198], [0.25, 0.29], [0.294, 0.255], [0.338, 0.29], [0.34, 0.198], [0.414, 0.205], [0.414, 0.53]]
+      },
+      "sweep": "up",
+      "band": [0.78, 0.93],
+      "wander": 0.08
+    },
+    { "name": "virgin", "shape": { "ellipse": [0.147, 0.195, 0.024, 0.05] }, "sweep": "out", "band": [0.93, 0.985], "wander": 0.03 }
+  ]
+}

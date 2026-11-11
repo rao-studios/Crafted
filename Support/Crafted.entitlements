@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- No sandbox: Crafted reads the folder a person drops wherever it is, runs `swift build` on the package it makes,
+	     and shares the model folder (~/.rao/models) with Craft. Whether the hardened runtime needs
+	     com.apple.security.cs.disable-library-validation for MLX's run-time kernels is settled in the follow-up, when a
+	     notarized build first loads a model (Craft's AIIServer needed it; Craft's app did not). -->
+</dict>
+</plist>

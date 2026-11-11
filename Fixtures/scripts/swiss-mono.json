@@ -1,0 +1,764 @@
+{
+ "format": "crafted-script/1",
+ "answers": [
+  {
+   "purpose": "designer.look",
+   "match": "Piece: card-exhibition-01.png",
+   "once": true,
+   "json": {
+    "piece": {
+     "kind": "socialcard",
+     "confidence": "high"
+    },
+    "ground": "light",
+    "colourRoles": {
+     "background": "A",
+     "ink": "B",
+     "accent": [
+      "#E30613"
+     ],
+     "secondary": [],
+     "muted": [
+      "E"
+     ]
+    },
+    "layout": {
+     "structure": "type-only",
+     "columns": 1,
+     "alignment": "left",
+     "margins": "regular",
+     "density": "sparse",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "middle",
+      "scale": "huge",
+      "case": "title",
+      "treatment": "plain"
+     },
+     "emphasis": "size"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "tight",
+      "contrast": "low"
+     },
+     {
+      "role": "body",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "low"
+     },
+     {
+      "role": "numeral",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "tight",
+      "contrast": "low"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a heavy rule under the title",
+      "kind": "rule",
+      "where": "divider"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "heavy",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "bold",
+     "minimal",
+     "austere"
+    ],
+    "marks": [],
+    "people": "none",
+    "notes": "One huge red figure carries the card."
+   }
+  },
+  {
+   "purpose": "designer.look",
+   "match": "Piece: card-exhibition-01.png",
+   "json": {
+    "piece": {
+     "kind": "socialcard",
+     "confidence": "high"
+    },
+    "ground": "light",
+    "colourRoles": {
+     "background": "A",
+     "ink": "B",
+     "accent": [
+      "C"
+     ],
+     "secondary": [],
+     "muted": [
+      "E"
+     ]
+    },
+    "layout": {
+     "structure": "type-only",
+     "columns": 1,
+     "alignment": "left",
+     "margins": "regular",
+     "density": "sparse",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "middle",
+      "scale": "huge",
+      "case": "title",
+      "treatment": "plain"
+     },
+     "emphasis": "size"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "tight",
+      "contrast": "low"
+     },
+     {
+      "role": "body",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "low"
+     },
+     {
+      "role": "numeral",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "tight",
+      "contrast": "low"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a heavy rule under the title",
+      "kind": "rule",
+      "where": "divider"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "heavy",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "bold",
+     "minimal",
+     "austere"
+    ],
+    "marks": [],
+    "people": "none",
+    "notes": "One huge red figure carries the card."
+   }
+  },
+  {
+   "purpose": "designer.look",
+   "match": "Piece: flyer-type-workshop.png",
+   "json": {
+    "piece": {
+     "kind": "flyer",
+     "confidence": "high"
+    },
+    "ground": "light",
+    "colourRoles": {
+     "background": "A",
+     "ink": "B",
+     "accent": [
+      "C"
+     ],
+     "secondary": [],
+     "muted": [
+      "E"
+     ]
+    },
+    "layout": {
+     "structure": "grid",
+     "columns": 3,
+     "alignment": "left",
+     "margins": "regular",
+     "density": "balanced",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "middle",
+      "scale": "large",
+      "case": "sentence",
+      "treatment": "plain"
+     },
+     "emphasis": "size"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "tight",
+      "contrast": "low"
+     },
+     {
+      "role": "heading",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "italic",
+      "tracking": "normal",
+      "contrast": "high"
+     },
+     {
+      "role": "label",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "medium",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "loose",
+      "contrast": "low"
+     },
+     {
+      "role": "body",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "low"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a large red circle",
+      "kind": "shape",
+      "where": "corner"
+     },
+     {
+      "name": "a full-width rule",
+      "kind": "rule",
+      "where": "divider"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "heavy",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "bold",
+     "minimal"
+    ],
+    "marks": [],
+    "people": "none",
+    "notes": ""
+   }
+  },
+  {
+   "purpose": "designer.look",
+   "match": "Piece: poster-form-follows-grid.png",
+   "json": {
+    "piece": {
+     "kind": "poster",
+     "confidence": "high"
+    },
+    "ground": "light",
+    "colourRoles": {
+     "background": "A",
+     "ink": "B",
+     "accent": [
+      "C"
+     ],
+     "secondary": [],
+     "muted": [
+      "E"
+     ]
+    },
+    "layout": {
+     "structure": "hero",
+     "columns": 3,
+     "alignment": "left",
+     "margins": "generous",
+     "density": "balanced",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "top",
+      "scale": "huge",
+      "case": "sentence",
+      "treatment": "stacked"
+     },
+     "emphasis": "size"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "tight",
+      "contrast": "low"
+     },
+     {
+      "role": "body",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "normal",
+      "contrast": "low"
+     },
+     {
+      "role": "label",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "medium",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "loose",
+      "contrast": "low"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a short red bar",
+      "kind": "rule",
+      "where": "corner"
+     },
+     {
+      "name": "a full-width rule",
+      "kind": "rule",
+      "where": "divider"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "heavy",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "bold",
+     "austere",
+     "technical"
+    ],
+    "marks": [],
+    "people": "none",
+    "notes": ""
+   }
+  },
+  {
+   "purpose": "designer.look",
+   "match": "Piece: report-cover.png",
+   "json": {
+    "piece": {
+     "kind": "book-cover",
+     "confidence": "high"
+    },
+    "ground": "light",
+    "colourRoles": {
+     "background": "A",
+     "ink": "B",
+     "accent": [
+      "C"
+     ],
+     "secondary": [],
+     "muted": []
+    },
+    "layout": {
+     "structure": "band",
+     "columns": 1,
+     "alignment": "left",
+     "margins": "regular",
+     "density": "balanced",
+     "symmetry": "asymmetric"
+    },
+    "hierarchy": {
+     "levels": 3,
+     "headline": {
+      "position": "top",
+      "scale": "huge",
+      "case": "title",
+      "treatment": "plain"
+     },
+     "emphasis": "space"
+    },
+    "type": [
+     {
+      "role": "display",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "bold",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "tight",
+      "contrast": "low"
+     },
+     {
+      "role": "heading",
+      "class": "serif",
+      "sub": "didone",
+      "weight": "regular",
+      "width": "normal",
+      "slant": "italic",
+      "tracking": "normal",
+      "contrast": "high"
+     },
+     {
+      "role": "label",
+      "class": "sans",
+      "sub": "neo-grotesque",
+      "weight": "medium",
+      "width": "normal",
+      "slant": "upright",
+      "tracking": "loose",
+      "contrast": "low"
+     }
+    ],
+    "imagery": {
+     "kinds": [
+      "none"
+     ],
+     "treatment": "none",
+     "share": "none"
+    },
+    "motifs": [
+     {
+      "name": "a black band across the foot",
+      "kind": "shape",
+      "where": "edge"
+     }
+    ],
+    "shape": {
+     "corners": "square",
+     "strokes": "heavy",
+     "shadows": "none",
+     "fills": "flat"
+    },
+    "mood": [
+     "serious",
+     "minimal"
+    ],
+    "marks": [],
+    "people": "none",
+    "notes": ""
+   }
+  },
+  {
+   "purpose": "designer.synth.colour",
+   "json": {
+    "roles": {
+     "background": {
+      "light": "A",
+      "dark": "B"
+     },
+     "surface": {
+      "light": "D",
+      "dark": "B"
+     },
+     "ink": {
+      "light": "B",
+      "dark": "A"
+     },
+     "inkMuted": {
+      "light": "E",
+      "dark": "D"
+     },
+     "accent": {
+      "light": "C",
+      "dark": "C"
+     },
+     "accentInk": {
+      "light": "A",
+      "dark": "A"
+     },
+     "secondary": {
+      "light": "B",
+      "dark": "A"
+     },
+     "rule": {
+      "light": "B",
+      "dark": "E"
+     }
+    },
+    "gradients": [],
+    "usage": [
+     "Paper and black do the work; the red is spent once a page, on the one thing to see first."
+    ]
+   }
+  },
+  {
+   "purpose": "designer.synth.type",
+   "json": {
+    "roles": {
+     "display": {
+      "family": "Helvetica Neue",
+      "class": "sans",
+      "weight": 700,
+      "style": "normal",
+      "case": "none",
+      "tracking": -0.02,
+      "leading": 0.95
+     },
+     "heading": {
+      "family": "Playfair Display",
+      "class": "serif",
+      "weight": 400,
+      "style": "italic",
+      "case": "none",
+      "tracking": 0,
+      "leading": 1.15
+     },
+     "body": {
+      "family": "Helvetica Neue",
+      "class": "sans",
+      "weight": 400,
+      "style": "normal",
+      "case": "none",
+      "tracking": 0,
+      "leading": 1.4
+     },
+     "caption": {
+      "family": "Helvetica Neue",
+      "class": "sans",
+      "weight": 400,
+      "style": "normal",
+      "case": "none",
+      "tracking": 0,
+      "leading": 1.3
+     },
+     "label": {
+      "family": "Helvetica Neue",
+      "class": "sans",
+      "weight": 500,
+      "style": "normal",
+      "case": "upper",
+      "tracking": 0.08,
+      "leading": 1.2
+     },
+     "numeral": {
+      "family": "Helvetica Neue",
+      "class": "sans",
+      "weight": 700,
+      "style": "normal",
+      "case": "none",
+      "tracking": -0.03,
+      "leading": 0.9
+     }
+    },
+    "ratio": 1.333
+   }
+  },
+  {
+   "purpose": "designer.synth.layout",
+   "json": {
+    "alignment": "left",
+    "symmetry": "asymmetric",
+    "density": "balanced",
+    "columns": 3,
+    "archetypes": [
+     {
+      "engine": "hero",
+      "for": [
+       "poster",
+       "socialcard",
+       "story",
+       "banner"
+      ],
+      "weight": 1.2,
+      "headline": "top",
+      "image": "top"
+     },
+     {
+      "engine": "grid",
+      "for": [
+       "flyer",
+       "onepager",
+       "brochure",
+       "slide"
+      ],
+      "weight": 1,
+      "headline": "top",
+      "image": "top"
+     },
+     {
+      "engine": "column",
+      "for": [
+       "onepager",
+       "brochure"
+      ],
+      "weight": 0.8,
+      "headline": "top",
+      "image": "top"
+     },
+     {
+      "engine": "split",
+      "for": [
+       "businesscard",
+       "slide",
+       "banner"
+      ],
+      "weight": 1,
+      "headline": "middle",
+      "image": "left"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "designer.synth.imagery",
+   "json": {
+    "kinds": [
+     "none"
+    ],
+    "treatments": [],
+    "rules": [
+     "No photographs: shapes and type carry the page."
+    ],
+    "placeholder": "solid",
+    "motifs": [
+     {
+      "id": "red-bar",
+      "kind": "rule",
+      "slot": "accent",
+      "css": "background: var(--accent)",
+      "use": "a short red bar over the first line"
+     },
+     {
+      "id": "heavy-rule",
+      "kind": "rule",
+      "slot": "divider",
+      "css": "border-top: 4px solid var(--ink)",
+      "use": "between the head and the facts"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "designer.synth.voice",
+   "once": true,
+   "json": {
+    "tone": [
+     "plain",
+     "exact"
+    ],
+    "headline": "Two or three words.",
+    "samples": [
+     "Design is everything"
+    ]
+   }
+  },
+  {
+   "purpose": "designer.synth.voice",
+   "json": {
+    "tone": [
+     "plain",
+     "exact",
+     "dry"
+    ],
+    "headline": "Two or three words, sentence case, set tight; a statement, never a question.",
+    "vocabulary": [
+     "grid",
+     "form",
+     "measure",
+     "red",
+     "lecture"
+    ],
+    "avoid": [
+     "amazing",
+     "exciting",
+     "unlock"
+    ],
+    "samples": []
+   }
+  },
+  {
+   "purpose": "designer.words",
+   "json": {
+    "style": "Swiss Mono",
+    "tagline": "Posters, flyers and cards on a strict grid, in black and one red.",
+    "keywords": [
+     "swiss",
+     "grid",
+     "poster",
+     "minimal",
+     "typography"
+    ]
+   }
+  }
+ ]
+}

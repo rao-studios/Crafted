@@ -1,0 +1,17 @@
+Copied from craft.rao.nyc by Scripts/art/sync-watercolours.sh. Do not edit these files by hand.
+site commit: 834561c402bcf08b848f0ed5748c7d7fdc4db57c
+synced: 2026-11-11T06:30:10Z
+
+Sources/CraftedApp/Resources/Watercolour/gardens-far.webp  <-  public/home/gardens-far.ae150500.webp
+Sources/CraftedApp/Resources/Watercolour/gardens-fog.webp  <-  public/home/gardens-fog.e759f078.webp
+Sources/CraftedApp/Resources/Watercolour/gardens-near.webp  <-  public/home/gardens-near.23bd3fe0.webp
+Sources/CraftedApp/Resources/Watercolour/fourviere-far.webp  <-  public/home/fourviere-far.ee94535a.webp
+Sources/CraftedApp/Resources/Watercolour/fourviere-fog.webp  <-  public/home/fourviere-fog.4232a3cb.webp
+Sources/CraftedApp/Resources/Watercolour/fourviere-near.webp  <-  public/home/fourviere-near.145d6f95.webp
+Sources/CraftedApp/Resources/Watercolour/lyon-far.webp  <-  public/home/lyon-far.bca8862e.webp
+Sources/CraftedApp/Resources/Watercolour/lyon-fog.webp  <-  public/home/lyon-fog.8fc59177.webp
+Sources/CraftedApp/Resources/Watercolour/lyon-near.webp  <-  public/home/lyon-near.74119bd0.webp
+Sources/CraftedApp/Resources/Watercolour/bloom-sky.webp  <-  public/home/bloom-sky.59a1d2df.webp
+Sources/CraftedApp/Resources/Watercolour/bloom-brass.webp  <-  public/home/bloom-brass.eaef0e05.webp
+Sources/CraftedApp/Resources/Watercolour/bloom-clay.webp  <-  public/home/bloom-clay.83878490.webp
+Sources/CraftedApp/Resources/seal.png  <-  public/rao/seal-512.png

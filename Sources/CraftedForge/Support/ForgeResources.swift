@@ -1,4 +1,6 @@
 //  WHAT: Finds the forge's bundled resources (prompts, hazard sheets, licence texts, reserved words, fallback faces).
+//  IN:   `CRAFTED_FORGE_RESOURCES` (a Resources folder, for a tool run outside the build), else the
+//        Crafted_CraftedForge.bundle beside the app, the executable or the test bundle.
 //  PIN:  NEVER `Bundle.module`: SwiftPM's accessor traps inside a .app when the bundle is not where the build left
 //        it. make-app.sh copies Crafted_CraftedForge.bundle into Contents/Resources; a dev binary and the test
 //        runner keep it beside them.
@@ -27,9 +29,16 @@ public enum ForgeResources {
 
     /// A resource by its path under Resources/: "Prompts/engineer.card.v1.md".
     public static func url(_ path: String) -> URL? {
-        guard let bundle else { return nil }
-        let base = bundle.resourceURL ?? bundle.bundleURL
-        for candidate in [base.appendingPathComponent("Resources").appendingPathComponent(path), base.appendingPathComponent(path)] {
+        var bases: [URL] = []
+        if let override = ProcessInfo.processInfo.environment["CRAFTED_FORGE_RESOURCES"], !override.isEmpty {
+            bases.append(URL(fileURLWithPath: (override as NSString).expandingTildeInPath, isDirectory: true))
+        }
+        if let bundle {
+            let base = bundle.resourceURL ?? bundle.bundleURL
+            bases += [base.appendingPathComponent("Resources"), base]
+        }
+        for base in bases {
+            let candidate = base.appendingPathComponent(path)
             if FileManager.default.fileExists(atPath: candidate.path) { return candidate }
         }
         return nil

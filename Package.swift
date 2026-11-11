@@ -91,5 +91,6 @@ let package = Package(
         ),
         .testTarget(name: "CraftedCoreTests", dependencies: ["CraftedCore"], swiftSettings: swift5),
         .testTarget(name: "CraftedForgeTests", dependencies: ["CraftedForge", "CraftedCore"], swiftSettings: swift5),
+        .testTarget(name: "CraftedRuntimeTests", dependencies: ["CraftedRuntime", "CraftedForge", "CraftedCore"], swiftSettings: swift5),
     ]
 )

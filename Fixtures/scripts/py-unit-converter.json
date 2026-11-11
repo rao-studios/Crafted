@@ -1,0 +1,2115 @@
+{
+ "format": "crafted-script/1",
+ "answers": [
+  {
+   "purpose": "engineer.brief",
+   "json": {
+    "title": "Unit Converter",
+    "summary": "A small Python command-line tool that converts lengths (mm, cm, m, km, in, ft, yd, mi), masses (mg, g, kg, oz, lb, st) and temperatures (C, F, K), and prints conversion tables from a start to a stop value in steps. Results are rounded to four places unless --precision says otherwise, the way Python's round does (half to even). Temperatures below absolute zero are refused. Lengths convert through metres and masses through kilograms, with the factors in one table.",
+    "purpose": "Convert a value between units of one kind, or tabulate a conversion.",
+    "kind": "cli",
+    "entry": [
+     "python -m converter.cli VALUE FROM TO [--precision N]",
+     "python -m converter.cli START FROM TO --table STOP STEP"
+    ],
+    "languages": [
+     "python"
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: converter/__init__.py (",
+   "json": {
+    "role": "glue",
+    "summary": "Marks the converter package.",
+    "importance": 0.05,
+    "why": "A docstring only."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: converter/units.py (",
+   "json": {
+    "role": "data",
+    "summary": "The conversion factors: each length in metres, each mass in kilograms, and the temperature scales.",
+    "entities": [
+     {
+      "name": "LENGTH",
+      "kind": "table",
+      "lines": "4-13"
+     },
+     {
+      "name": "MASS",
+      "kind": "table",
+      "lines": "16-23"
+     },
+     {
+      "name": "TEMPERATURE",
+      "kind": "constant",
+      "lines": "25"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "A mile is 1609.344 metres.",
+      "formula": "\"mi\": 1609.344",
+      "lines": "12"
+     },
+     {
+      "statement": "A pound is 0.45359237 kilograms.",
+      "formula": "\"lb\": 0.45359237",
+      "lines": "21"
+     },
+     {
+      "statement": "Temperatures are C, F or K.",
+      "formula": "TEMPERATURE = (\"C\", \"F\", \"K\")",
+      "lines": "25"
+     }
+    ],
+    "outputs": [
+     "factor tables"
+    ],
+    "spotted": [
+     {
+      "title": "list the units of each kind",
+      "entry": "none (latent)"
+     }
+    ],
+    "importance": 0.8,
+    "why": "Every conversion reads these factors."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: converter/length.py (",
+   "json": {
+    "role": "logic",
+    "summary": "Converts a length between units through metres.",
+    "operations": [
+     {
+      "name": "convert_length",
+      "signature": "convert_length(value, from_unit, to_unit)",
+      "lines": "6-13",
+      "does": "Converts a length, refusing an unknown unit.",
+      "purity": "pure"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "A length converts through metres: multiply by the source factor, divide by the target's.",
+      "formula": "metres = value * LENGTH[from_unit]; metres / LENGTH[to_unit]",
+      "lines": "12-13"
+     },
+     {
+      "statement": "An unknown length unit is refused.",
+      "formula": "raise ValueError",
+      "lines": "8-11"
+     }
+    ],
+    "inputs": [
+     "value",
+     "from_unit",
+     "to_unit"
+    ],
+    "outputs": [
+     "the converted length"
+    ],
+    "depends": [
+     "converter/units.py"
+    ],
+    "spotted": [
+     {
+      "title": "convert a length",
+      "entry": "python -m converter.cli 5 km mi"
+     }
+    ],
+    "importance": 0.9,
+    "why": "One of the three conversions."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: converter/mass.py (",
+   "json": {
+    "role": "logic",
+    "summary": "Converts a mass between units through kilograms.",
+    "operations": [
+     {
+      "name": "convert_mass",
+      "signature": "convert_mass(value, from_unit, to_unit)",
+      "lines": "6-13",
+      "does": "Converts a mass, refusing an unknown unit.",
+      "purity": "pure"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "A mass converts through kilograms.",
+      "formula": "kilograms = value * MASS[from_unit]; kilograms / MASS[to_unit]",
+      "lines": "12-13"
+     }
+    ],
+    "inputs": [
+     "value",
+     "from_unit",
+     "to_unit"
+    ],
+    "outputs": [
+     "the converted mass"
+    ],
+    "depends": [
+     "converter/units.py"
+    ],
+    "spotted": [
+     {
+      "title": "convert a mass",
+      "entry": "python -m converter.cli 1 lb kg"
+     }
+    ],
+    "importance": 0.9,
+    "why": "One of the three conversions."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: converter/temperature.py (",
+   "json": {
+    "role": "logic",
+    "summary": "Converts temperatures between Celsius, Fahrenheit and Kelvin through Celsius, refusing one below absolute zero.",
+    "entities": [
+     {
+      "name": "ABSOLUTE_ZERO_C",
+      "kind": "constant",
+      "lines": "3"
+     }
+    ],
+    "operations": [
+     {
+      "name": "to_celsius",
+      "signature": "to_celsius(value, unit)",
+      "lines": "6-13",
+      "does": "A temperature in Celsius.",
+      "purity": "pure"
+     },
+     {
+      "name": "from_celsius",
+      "signature": "from_celsius(value, unit)",
+      "lines": "16-23",
+      "does": "A Celsius temperature in another scale.",
+      "purity": "pure"
+     },
+     {
+      "name": "convert_temperature",
+      "signature": "convert_temperature(value, from_unit, to_unit)",
+      "lines": "26-31",
+      "does": "Converts, refusing below absolute zero.",
+      "purity": "pure"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "Fahrenheit to Celsius subtracts 32 and scales by 5/9.",
+      "formula": "(value - 32) * 5 / 9",
+      "lines": "10"
+     },
+     {
+      "statement": "Celsius to Fahrenheit scales by 9/5 and adds 32.",
+      "formula": "value * 9 / 5 + 32",
+      "lines": "20"
+     },
+     {
+      "statement": "Kelvin is Celsius plus 273.15.",
+      "formula": "value + 273.15",
+      "lines": "22"
+     },
+     {
+      "statement": "A temperature below -273.15 C is refused.",
+      "formula": "celsius < ABSOLUTE_ZERO_C",
+      "lines": "3-30"
+     }
+    ],
+    "inputs": [
+     "value",
+     "from_unit",
+     "to_unit"
+    ],
+    "outputs": [
+     "the converted temperature"
+    ],
+    "spotted": [
+     {
+      "title": "convert a temperature",
+      "entry": "python -m converter.cli 100 C F"
+     }
+    ],
+    "importance": 0.9,
+    "why": "The conversion with offsets and a floor."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: converter/config.py (",
+   "json": {
+    "role": "config",
+    "summary": "Settings: the default precision, and a key kept from a retired feature.",
+    "entities": [
+     {
+      "name": "DEFAULT_PRECISION",
+      "kind": "constant",
+      "lines": "3"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "Results default to 4 places.",
+      "formula": "DEFAULT_PRECISION = 4",
+      "lines": "3"
+     }
+    ],
+    "importance": 0.3,
+    "why": "The default precision."
+   }
+  },
+  {
+   "purpose": "engineer.card",
+   "match": "File: converter/cli.py (",
+   "json": {
+    "role": "entry",
+    "summary": "The command line: converts one value by the units' kind, or prints a table of conversions, rounded to a precision.",
+    "operations": [
+     {
+      "name": "convert",
+      "signature": "convert(value, from_unit, to_unit)",
+      "lines": "12-20",
+      "does": "Picks the converter by the units' kind.",
+      "purity": "pure"
+     },
+     {
+      "name": "table",
+      "signature": "table(from_unit, to_unit, start, stop, step)",
+      "lines": "23-30",
+      "does": "Rows of value and converted value.",
+      "purity": "pure"
+     },
+     {
+      "name": "main",
+      "signature": "main(argv=None)",
+      "lines": "33-45",
+      "does": "Parses the arguments and prints.",
+      "purity": "effects"
+     }
+    ],
+    "rules": [
+     {
+      "statement": "Two units of different kinds cannot be converted.",
+      "formula": "raise ValueError(f\"cannot convert {from_unit} to {to_unit}\")",
+      "lines": "20"
+     },
+     {
+      "statement": "A table runs from start to stop inclusive, adding step each time.",
+      "formula": "while value <= stop: value += step",
+      "lines": "27-29"
+     },
+     {
+      "statement": "Results are rounded with Python's round to the precision.",
+      "formula": "round(converted, args.precision)",
+      "lines": "43-45"
+     }
+    ],
+    "inputs": [
+     "value",
+     "from_unit",
+     "to_unit",
+     "--precision",
+     "--table STOP STEP"
+    ],
+    "outputs": [
+     "a number, or tab-separated rows"
+    ],
+    "effects": [
+     {
+      "kind": "entry",
+      "detail": "argparse",
+      "lines": "34-40"
+     },
+     {
+      "kind": "output",
+      "detail": "print",
+      "lines": "43-45"
+     }
+    ],
+    "depends": [
+     "converter/length.py",
+     "converter/mass.py",
+     "converter/temperature.py",
+     "converter/units.py",
+     "converter/config.py"
+    ],
+    "spotted": [
+     {
+      "title": "print a conversion table",
+      "entry": "--table STOP STEP"
+     },
+     {
+      "title": "round to a precision",
+      "entry": "--precision N"
+     }
+    ],
+    "importance": 1.0,
+    "why": "How the tool is entered."
+   }
+  },
+  {
+   "purpose": "engineer.reduce.domain",
+   "json": {
+    "nature": "business",
+    "kind": "cli",
+    "entities": [
+     {
+      "name": "Unit",
+      "fields": [
+       "name",
+       "kind",
+       "factor"
+      ],
+      "files": [
+       "converter/units.py"
+      ]
+     },
+     {
+      "name": "Conversion",
+      "fields": [
+       "value",
+       "from",
+       "to",
+       "result"
+      ],
+      "files": [
+       "converter/cli.py"
+      ]
+     }
+    ],
+    "glossary": [
+     {
+      "term": "factor",
+      "meaning": "a unit's size in the base unit of its kind (metres, kilograms)"
+     },
+     {
+      "term": "precision",
+      "meaning": "the places a result is rounded to, half to even"
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.usecases",
+   "json": {
+    "usecases": [
+     {
+      "id": "uc1",
+      "kind": "business",
+      "title": "Convert a length",
+      "actor": "someone converting measurements",
+      "trigger": {
+       "entry": "python -m converter.cli 5 km mi",
+       "evidence": "converter/cli.py:33-45"
+      },
+      "inputs": [
+       {
+        "name": "value",
+        "type": "number",
+        "source": "argument",
+        "example": "5"
+       },
+       {
+        "name": "from",
+        "type": "string",
+        "source": "argument",
+        "example": "km"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "source": "argument",
+        "example": "mi"
+       }
+      ],
+      "steps": [
+       {
+        "text": "pick the converter by kind",
+        "evidence": "converter/cli.py:12-15"
+       },
+       {
+        "text": "convert through metres",
+        "evidence": "converter/length.py:6-13"
+       }
+      ],
+      "rules": [
+       "a length converts through metres",
+       "an unknown unit is refused"
+      ],
+      "outputs": [
+       {
+        "name": "result",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [
+        "tests/test_length.py"
+       ],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 0.9,
+      "confidence": 0.9
+     },
+     {
+      "id": "uc2",
+      "kind": "business",
+      "title": "Convert a mass",
+      "actor": "someone converting measurements",
+      "trigger": {
+       "entry": "python -m converter.cli 1 lb kg",
+       "evidence": "converter/cli.py:33-45"
+      },
+      "inputs": [
+       {
+        "name": "value",
+        "type": "number",
+        "source": "argument",
+        "example": "5"
+       },
+       {
+        "name": "from",
+        "type": "string",
+        "source": "argument",
+        "example": "lb"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "source": "argument",
+        "example": "kg"
+       }
+      ],
+      "steps": [
+       {
+        "text": "pick the converter by kind",
+        "evidence": "converter/cli.py:16-17"
+       },
+       {
+        "text": "convert through kilograms",
+        "evidence": "converter/mass.py:6-13"
+       }
+      ],
+      "rules": [
+       "a mass converts through kilograms"
+      ],
+      "outputs": [
+       {
+        "name": "result",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [
+        "tests/test_mass.py"
+       ],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 0.85,
+      "confidence": 0.9
+     },
+     {
+      "id": "uc3",
+      "kind": "business",
+      "title": "Convert a temperature",
+      "actor": "someone converting measurements",
+      "trigger": {
+       "entry": "python -m converter.cli 100 C F",
+       "evidence": "converter/cli.py:33-45"
+      },
+      "inputs": [
+       {
+        "name": "value",
+        "type": "number",
+        "source": "argument",
+        "example": "5"
+       },
+       {
+        "name": "from",
+        "type": "string",
+        "source": "argument",
+        "example": "C"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "source": "argument",
+        "example": "F"
+       }
+      ],
+      "steps": [
+       {
+        "text": "pick the converter by kind",
+        "evidence": "converter/cli.py:18-19"
+       },
+       {
+        "text": "convert through Celsius, refusing below absolute zero",
+        "evidence": "converter/temperature.py:26-31"
+       }
+      ],
+      "rules": [
+       "F to C: (value - 32) * 5 / 9",
+       "below absolute zero is refused"
+      ],
+      "outputs": [
+       {
+        "name": "result",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [
+        "tests/test_temperature.py"
+       ],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 0.85,
+      "confidence": 0.9
+     },
+     {
+      "id": "uc4",
+      "kind": "business",
+      "title": "Print a conversion table",
+      "actor": "someone converting measurements",
+      "trigger": {
+       "entry": "python -m converter.cli 0 C F --table 100 10",
+       "evidence": "converter/cli.py:39-43"
+      },
+      "inputs": [
+       {
+        "name": "from",
+        "type": "string",
+        "source": "argument",
+        "example": "C"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "source": "argument",
+        "example": "F"
+       },
+       {
+        "name": "start",
+        "type": "number",
+        "source": "argument",
+        "example": "5"
+       },
+       {
+        "name": "stop",
+        "type": "number",
+        "source": "argument",
+        "example": "5"
+       },
+       {
+        "name": "step",
+        "type": "number",
+        "source": "argument",
+        "example": "5"
+       }
+      ],
+      "steps": [
+       {
+        "text": "rows from start to stop in steps",
+        "evidence": "converter/cli.py:23-30"
+       }
+      ],
+      "rules": [
+       "rows run from start to stop inclusive"
+      ],
+      "outputs": [
+       {
+        "name": "rows",
+        "type": "table",
+        "form": "table"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 0.7,
+      "confidence": 0.9
+     },
+     {
+      "id": "uc5",
+      "kind": "business",
+      "title": "Round a result to a precision",
+      "actor": "someone converting measurements",
+      "trigger": {
+       "entry": "--precision N",
+       "evidence": "converter/cli.py:38-45"
+      },
+      "inputs": [
+       {
+        "name": "value",
+        "type": "number",
+        "source": "argument",
+        "example": "5"
+       },
+       {
+        "name": "precision",
+        "type": "number",
+        "source": "argument",
+        "example": "4"
+       }
+      ],
+      "steps": [
+       {
+        "text": "round with Python's round",
+        "evidence": "converter/cli.py:43-45"
+       }
+      ],
+      "rules": [
+       "rounded half to even, four places by default"
+      ],
+      "outputs": [
+       {
+        "name": "result",
+        "type": "number",
+        "form": "value"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 0.6,
+      "confidence": 0.9
+     },
+     {
+      "id": "uc6",
+      "kind": "business",
+      "title": "List the units of each kind",
+      "actor": "someone converting measurements",
+      "trigger": {
+       "entry": "none (latent)",
+       "evidence": "converter/units.py:3-25"
+      },
+      "inputs": [
+       {
+        "name": "kind",
+        "type": "string",
+        "source": "argument",
+        "example": "length"
+       }
+      ],
+      "steps": [
+       {
+        "text": "the factor tables",
+        "evidence": "converter/units.py:3-25"
+       }
+      ],
+      "rules": [
+       "each unit has a factor in the base unit of its kind"
+      ],
+      "outputs": [
+       {
+        "name": "units",
+        "type": "table",
+        "form": "table"
+       }
+      ],
+      "needs": {
+       "pure": true
+      },
+      "verifiability": {
+       "sourceTests": [],
+       "examples": [],
+       "derivable": true
+      },
+      "value": 0.5,
+      "confidence": 0.9
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc1 (",
+   "json": {
+    "id": "uc1",
+    "confirmed": true,
+    "title": "Convert a length",
+    "notes": "Every step is on the cited lines."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc2 (",
+   "json": {
+    "id": "uc2",
+    "confirmed": true,
+    "title": "Convert a mass",
+    "notes": "Every step is on the cited lines."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc3 (",
+   "json": {
+    "id": "uc3",
+    "confirmed": true,
+    "title": "Convert a temperature",
+    "notes": "Every step is on the cited lines."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc4 (",
+   "json": {
+    "id": "uc4",
+    "confirmed": true,
+    "title": "Print a conversion table",
+    "notes": "Every step is on the cited lines."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc5 (",
+   "json": {
+    "id": "uc5",
+    "confirmed": true,
+    "title": "Round a result to a precision",
+    "notes": "Every step is on the cited lines."
+   }
+  },
+  {
+   "purpose": "engineer.verify",
+   "match": "The use case:\nuc6 (",
+   "json": {
+    "id": "uc6",
+    "confirmed": true,
+    "title": "List the units of each kind",
+    "notes": "Every step is on the cited lines."
+   }
+  },
+  {
+   "purpose": "engineer.interpret.whole",
+   "json": {
+    "name": "Unit Converter",
+    "word": "unitconverter",
+    "summary": "Converts lengths, masses and temperatures, tabulates a conversion, and lists the units it knows.",
+    "commands": [
+     {
+      "name": "convert",
+      "summary": "Converts a value between two units of one kind, rounded to a precision.",
+      "args": [
+       {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "the value to convert"
+       },
+       {
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "note": "the unit it is in: km, lb, C …"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "note": "the unit to convert to"
+       },
+       {
+        "name": "precision",
+        "type": "integer",
+        "required": false,
+        "note": "places to round to, half to even: 4 when left out"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "value",
+        "what": "the converted value"
+       }
+      ],
+      "usecases": [
+       "uc1",
+       "uc2",
+       "uc3",
+       "uc5"
+      ]
+     },
+     {
+      "name": "table",
+      "summary": "A table of conversions from a start value to a stop value in steps.",
+      "args": [
+       {
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "note": "the unit the values are in"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "note": "the unit to convert to"
+       },
+       {
+        "name": "start",
+        "type": "number",
+        "required": true,
+        "note": "the first value"
+       },
+       {
+        "name": "stop",
+        "type": "number",
+        "required": true,
+        "note": "the last value, included when a step lands on it"
+       },
+       {
+        "name": "step",
+        "type": "number",
+        "required": true,
+        "note": "what each row adds, above zero"
+       },
+       {
+        "name": "precision",
+        "type": "integer",
+        "required": false,
+        "note": "places to round to: 4 when left out"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "csv",
+        "what": "the table"
+       },
+       {
+        "channel": "canvas",
+        "kind": "report",
+        "what": "the table as a picture"
+       }
+      ],
+      "usecases": [
+       "uc4"
+      ]
+     },
+     {
+      "name": "units",
+      "summary": "The units of each kind, with each one's factor in its base unit.",
+      "args": [
+       {
+        "name": "kind",
+        "type": "choice",
+        "required": false,
+        "note": "length, mass or temperature: all three when left out",
+        "values": [
+         "length",
+         "mass",
+         "temperature"
+        ]
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "csv",
+        "what": "the units"
+       }
+      ],
+      "usecases": [
+       "uc6"
+      ]
+     }
+    ],
+    "canvas": [
+     "a conversion table as a picture"
+    ],
+    "handsOff": [
+     "a table as a hand-off"
+    ],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "converter/units.py",
+      "lines": "1-25",
+      "how": "port"
+     },
+     {
+      "path": "converter/length.py",
+      "lines": "6-13",
+      "how": "port"
+     },
+     {
+      "path": "converter/mass.py",
+      "lines": "6-13",
+      "how": "port"
+     },
+     {
+      "path": "converter/temperature.py",
+      "lines": "1-31",
+      "how": "port"
+     },
+     {
+      "path": "converter/cli.py",
+      "lines": "12-45",
+      "how": "port"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the exchange-rate key in config.py",
+      "why": "it is a secret, and the currency feature it served was retired"
+     },
+     {
+      "what": "the printed command line",
+      "why": "a call's answer and files take its place"
+     }
+    ],
+    "confidence": {
+     "score": 0.85,
+     "basis": "every rule is a line of arithmetic, and the tests pin eleven cases"
+    },
+    "effort": {
+     "units": 2,
+     "sourceLines": 120,
+     "minutes": 15,
+     "risk": "low",
+     "hardest": "Python's half-to-even rounding"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.interpret.core",
+   "json": {
+    "name": "Precise Convert",
+    "word": "preciseconvert",
+    "summary": "One command that converts any length, mass or temperature, deeply: every unit, the absolute-zero floor, and rounding as Python does.",
+    "commands": [
+     {
+      "name": "convert",
+      "summary": "Converts a value between two units of one kind.",
+      "args": [
+       {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "the value"
+       },
+       {
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "note": "its unit"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "note": "the unit wanted"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "output",
+        "kind": "value",
+        "what": "the converted value"
+       }
+      ],
+      "usecases": [
+       "uc1",
+       "uc2",
+       "uc3"
+      ]
+     }
+    ],
+    "canvas": [],
+    "handsOff": [],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "converter/units.py",
+      "lines": "1-25",
+      "how": "port"
+     },
+     {
+      "path": "converter/length.py",
+      "lines": "6-13",
+      "how": "port"
+     },
+     {
+      "path": "converter/mass.py",
+      "lines": "6-13",
+      "how": "port"
+     },
+     {
+      "path": "converter/temperature.py",
+      "lines": "1-31",
+      "how": "port"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the exchange-rate key in config.py",
+      "why": "it is a secret, and the currency feature it served was retired"
+     },
+     {
+      "what": "the printed command line",
+      "why": "a call's answer and files take its place"
+     },
+     {
+      "what": "tables",
+      "why": "the core is one conversion"
+     }
+    ],
+    "confidence": {
+     "score": 0.9,
+     "basis": "the tests cover every kind"
+    },
+    "effort": {
+     "units": 2,
+     "sourceLines": 80,
+     "minutes": 10,
+     "risk": "low",
+     "hardest": "temperature offsets"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.interpret.material",
+   "json": {
+    "name": "Conversion Charts",
+    "word": "conversioncharts",
+    "summary": "What the converter knows, as material: conversion charts for Canvas and the factor tables handed on to other agents.",
+    "commands": [
+     {
+      "name": "chart",
+      "summary": "A conversion chart for Canvas, from a start value to a stop value.",
+      "args": [
+       {
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "note": "the unit"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "note": "the unit wanted"
+       },
+       {
+        "name": "start",
+        "type": "number",
+        "required": true,
+        "note": "the first value"
+       },
+       {
+        "name": "stop",
+        "type": "number",
+        "required": true,
+        "note": "the last value"
+       },
+       {
+        "name": "step",
+        "type": "number",
+        "required": true,
+        "note": "the step"
+       }
+      ],
+      "produces": [
+       {
+        "channel": "canvas",
+        "kind": "report",
+        "what": "the chart"
+       }
+      ],
+      "usecases": [
+       "uc4"
+      ]
+     },
+     {
+      "name": "factors",
+      "summary": "The factor tables, handed on.",
+      "args": [
+       {
+        "name": "kind",
+        "type": "choice",
+        "required": false,
+        "note": "length or mass",
+        "values": [
+         "length",
+         "mass"
+        ]
+       }
+      ],
+      "produces": [
+       {
+        "channel": "context",
+        "kind": "handoff",
+        "what": "the factors"
+       }
+      ],
+      "usecases": [
+       "uc6"
+      ]
+     }
+    ],
+    "canvas": [
+     "conversion charts"
+    ],
+    "handsOff": [
+     "factor tables"
+    ],
+    "accepts": [],
+    "ports": [
+     {
+      "path": "converter/units.py",
+      "lines": "1-25",
+      "how": "port"
+     },
+     {
+      "path": "converter/cli.py",
+      "lines": "12-45",
+      "how": "port"
+     }
+    ],
+    "leavesOut": [
+     {
+      "what": "the exchange-rate key in config.py",
+      "why": "it is a secret, and the currency feature it served was retired"
+     },
+     {
+      "what": "the printed command line",
+      "why": "a call's answer and files take its place"
+     }
+    ],
+    "confidence": {
+     "score": 0.7,
+     "basis": "the tables are data"
+    },
+    "effort": {
+     "units": 2,
+     "sourceLines": 60,
+     "minutes": 10,
+     "risk": "low",
+     "hardest": "none"
+    }
+   }
+  },
+  {
+   "purpose": "engineer.plan",
+   "json": {
+    "summary": "converts lengths, masses and temperatures between units, tabulates a conversion, and lists the units it knows, rounding as Python does.",
+    "guide": "Tag unitconverter to convert a measurement, make a table of conversions, or see which units it knows. Units are short names: mm cm m km in ft yd mi, mg g kg oz lb st, and C F K for temperatures.",
+    "commands": [
+     {
+      "name": "convert",
+      "summary": "Converts a value between two units of one kind, rounded to a precision.",
+      "usecases": [
+       "uc1",
+       "uc2",
+       "uc3",
+       "uc5"
+      ],
+      "args": [
+       {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "the value to convert"
+       },
+       {
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "note": "the unit it is in: km, lb, C …"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "note": "the unit to convert to, of the same kind"
+       },
+       {
+        "name": "precision",
+        "type": "integer",
+        "required": false,
+        "note": "places to round to, half to even: 4 when left out"
+       }
+      ],
+      "produces": [
+       {
+        "kind": "value",
+        "name": "result"
+       }
+      ],
+      "uses": [
+       "Conversions"
+      ],
+      "present": "output"
+     },
+     {
+      "name": "table",
+      "summary": "A table of conversions from a start value to a stop value in steps.",
+      "usecases": [
+       "uc4"
+      ],
+      "args": [
+       {
+        "name": "from",
+        "type": "string",
+        "required": true,
+        "note": "the unit the values are in"
+       },
+       {
+        "name": "to",
+        "type": "string",
+        "required": true,
+        "note": "the unit to convert to"
+       },
+       {
+        "name": "start",
+        "type": "number",
+        "required": true,
+        "note": "the first value"
+       },
+       {
+        "name": "stop",
+        "type": "number",
+        "required": true,
+        "note": "the last value, included when a step lands on it"
+       },
+       {
+        "name": "step",
+        "type": "number",
+        "required": true,
+        "note": "what each row adds, above zero"
+       },
+       {
+        "name": "precision",
+        "type": "integer",
+        "required": false,
+        "note": "places to round to: 4 when left out"
+       }
+      ],
+      "produces": [
+       {
+        "kind": "value",
+        "name": "rows"
+       },
+       {
+        "kind": "csv",
+        "name": "table"
+       },
+       {
+        "kind": "report",
+        "name": "table"
+       }
+      ],
+      "uses": [
+       "Conversions"
+      ],
+      "present": "output"
+     },
+     {
+      "name": "units",
+      "summary": "The units of each kind, with each one's factor in its base unit.",
+      "usecases": [
+       "uc6"
+      ],
+      "args": [
+       {
+        "name": "kind",
+        "type": "choice",
+        "required": false,
+        "note": "length, mass or temperature: all three when left out",
+        "values": [
+         "length",
+         "mass",
+         "temperature"
+        ]
+       }
+      ],
+      "produces": [
+       {
+        "kind": "value",
+        "name": "count"
+       },
+       {
+        "kind": "csv",
+        "name": "units"
+       }
+      ],
+      "uses": [
+       "UnitTables"
+      ],
+      "present": "output"
+     }
+    ],
+    "units": [
+     {
+      "unit": "UnitTables",
+      "kind": "logic",
+      "summary": "The units of each kind and their factors, from units.py.",
+      "uses": [],
+      "resources": [],
+      "calls": [],
+      "functions": [
+       {
+        "name": "kind",
+        "params": [
+         {
+          "label": "of",
+          "name": "unit",
+          "type": "String"
+         }
+        ],
+        "returns": "String",
+        "rules": [
+         "length, mass or temperature; an unknown unit is refused"
+        ]
+       },
+       {
+        "name": "lengthFactor",
+        "params": [
+         {
+          "name": "unit",
+          "type": "String"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "metres per unit, from the LENGTH table"
+        ]
+       },
+       {
+        "name": "massFactor",
+        "params": [
+         {
+          "name": "unit",
+          "type": "String"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "kilograms per unit, from the MASS table"
+        ]
+       },
+       {
+        "name": "units",
+        "params": [
+         {
+          "name": "kind",
+          "type": "String"
+         }
+        ],
+        "returns": "[String]",
+        "rules": [
+         "the units of a kind in the table's order"
+        ]
+       }
+      ],
+      "evidence": [
+       "converter/units.py:1-25"
+      ]
+     },
+     {
+      "unit": "Conversions",
+      "kind": "logic",
+      "summary": "Every conversion, the table, and Python's rounding.",
+      "uses": [
+       "ConversionRow"
+      ],
+      "resources": [],
+      "calls": [
+       "UnitTables"
+      ],
+      "functions": [
+       {
+        "name": "convertLength",
+        "params": [
+         {
+          "name": "value",
+          "type": "Double"
+         },
+         {
+          "name": "from",
+          "type": "String"
+         },
+         {
+          "name": "to",
+          "type": "String"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "through metres: value times the source factor over the target factor"
+        ]
+       },
+       {
+        "name": "convertMass",
+        "params": [
+         {
+          "name": "value",
+          "type": "Double"
+         },
+         {
+          "name": "from",
+          "type": "String"
+         },
+         {
+          "name": "to",
+          "type": "String"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "through kilograms"
+        ]
+       },
+       {
+        "name": "convertTemperature",
+        "params": [
+         {
+          "name": "value",
+          "type": "Double"
+         },
+         {
+          "name": "from",
+          "type": "String"
+         },
+         {
+          "name": "to",
+          "type": "String"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "through Celsius; below -273.15 C is refused"
+        ]
+       },
+       {
+        "name": "convert",
+        "params": [
+         {
+          "name": "value",
+          "type": "Double"
+         },
+         {
+          "name": "from",
+          "type": "String"
+         },
+         {
+          "name": "to",
+          "type": "String"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "picks the conversion by the units' kind; two kinds cannot be converted"
+        ]
+       },
+       {
+        "name": "rounded",
+        "params": [
+         {
+          "name": "value",
+          "type": "Double"
+         },
+         {
+          "name": "places",
+          "type": "Int"
+         }
+        ],
+        "returns": "Double",
+        "rules": [
+         "half to even, as Python's round"
+        ]
+       },
+       {
+        "name": "table",
+        "params": [
+         {
+          "name": "from",
+          "type": "String"
+         },
+         {
+          "name": "to",
+          "type": "String"
+         },
+         {
+          "name": "start",
+          "type": "Double"
+         },
+         {
+          "name": "stop",
+          "type": "Double"
+         },
+         {
+          "name": "step",
+          "type": "Double"
+         }
+        ],
+        "returns": "[ConversionRow]",
+        "rules": [
+         "rows from start while value <= stop, adding step each time; a step of zero or less is refused"
+        ]
+       }
+      ],
+      "evidence": [
+       "converter/length.py:6-13",
+       "converter/mass.py:6-13",
+       "converter/temperature.py:1-31",
+       "converter/cli.py:12-30",
+       "converter/cli.py:41-45"
+      ]
+     }
+    ],
+    "types": [
+     {
+      "name": "ConversionRow",
+      "kind": "struct",
+      "note": "One row of a conversion table.",
+      "fields": [
+       {
+        "name": "value",
+        "type": "Double",
+        "note": "the value in the source unit"
+       },
+       {
+        "name": "converted",
+        "type": "Double",
+        "note": "the same value in the target unit"
+       }
+      ]
+     }
+    ],
+    "resources": [],
+    "lifts": []
+   }
+  },
+  {
+   "purpose": "engineer.vectors",
+   "match": "The unit: UnitTables\n",
+   "json": {
+    "vectors": [
+     {
+      "name": "km is a length",
+      "function": "kind",
+      "args": {
+       "unit": "km"
+      },
+      "origin": "derived",
+      "evidence": "converter/units.py:8",
+      "expect": "length"
+     },
+     {
+      "name": "lb is a mass",
+      "function": "kind",
+      "args": {
+       "unit": "lb"
+      },
+      "origin": "derived",
+      "evidence": "converter/units.py:21",
+      "expect": "mass"
+     },
+     {
+      "name": "K is a temperature",
+      "function": "kind",
+      "args": {
+       "unit": "K"
+      },
+      "origin": "derived",
+      "evidence": "converter/units.py:25",
+      "expect": "temperature"
+     },
+     {
+      "name": "an unknown unit has no kind",
+      "function": "kind",
+      "args": {
+       "unit": "furlong"
+      },
+      "origin": "derived",
+      "expectError": true
+     },
+     {
+      "name": "a mile in metres",
+      "function": "lengthFactor",
+      "args": {
+       "unit": "mi"
+      },
+      "origin": "derived",
+      "evidence": "converter/units.py:12",
+      "expect": 1609.344
+     },
+     {
+      "name": "an ounce in kilograms",
+      "function": "massFactor",
+      "args": {
+       "unit": "oz"
+      },
+      "origin": "derived",
+      "evidence": "converter/units.py:20",
+      "expect": 0.028349523125
+     },
+     {
+      "name": "km has no mass factor",
+      "function": "massFactor",
+      "args": {
+       "unit": "km"
+      },
+      "origin": "derived",
+      "expectError": true
+     },
+     {
+      "name": "the lengths in order",
+      "function": "units",
+      "args": {
+       "kind": "length"
+      },
+      "origin": "derived",
+      "evidence": "converter/units.py:4-13",
+      "expect": [
+       "mm",
+       "cm",
+       "m",
+       "km",
+       "in",
+       "ft",
+       "yd",
+       "mi"
+      ]
+     },
+     {
+      "name": "six masses",
+      "function": "units",
+      "args": {
+       "kind": "mass"
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "lengthIs",
+       "value": 6
+      }
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.vectors",
+   "match": "The unit: Conversions\n",
+   "json": {
+    "vectors": [
+     {
+      "name": "kilometres to miles",
+      "function": "convertLength",
+      "args": {
+       "value": 5,
+       "from": "km",
+       "to": "mi"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_length.py:6-7",
+      "expect": 3.106856,
+      "tolerance": 1e-06
+     },
+     {
+      "name": "feet to metres",
+      "function": "convertLength",
+      "args": {
+       "value": 10,
+       "from": "ft",
+       "to": "m"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_length.py:10-11",
+      "expect": 3.048,
+      "tolerance": 1e-09
+     },
+     {
+      "name": "an unknown length unit",
+      "function": "convertLength",
+      "args": {
+       "value": 1,
+       "from": "furlong",
+       "to": "m"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_length.py:14-16",
+      "expectError": true
+     },
+     {
+      "name": "pounds to kilograms",
+      "function": "convertMass",
+      "args": {
+       "value": 1,
+       "from": "lb",
+       "to": "kg"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_mass.py:6-7",
+      "expect": 0.45359237,
+      "tolerance": 1e-12
+     },
+     {
+      "name": "stone to pounds",
+      "function": "convertMass",
+      "args": {
+       "value": 1,
+       "from": "st",
+       "to": "lb"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_mass.py:10-11",
+      "expect": 14,
+      "tolerance": 1e-09
+     },
+     {
+      "name": "an unknown mass unit",
+      "function": "convertMass",
+      "args": {
+       "value": 1,
+       "from": "grain",
+       "to": "g"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_mass.py:14-16",
+      "expectError": true
+     },
+     {
+      "name": "boiling point",
+      "function": "convertTemperature",
+      "args": {
+       "value": 100,
+       "from": "C",
+       "to": "F"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_temperature.py:6-7",
+      "expect": 212,
+      "tolerance": 1e-09
+     },
+     {
+      "name": "freezing point",
+      "function": "convertTemperature",
+      "args": {
+       "value": 32,
+       "from": "F",
+       "to": "C"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_temperature.py:10-11",
+      "expect": 0,
+      "tolerance": 1e-09
+     },
+     {
+      "name": "absolute zero in kelvin",
+      "function": "convertTemperature",
+      "args": {
+       "value": 0,
+       "from": "K",
+       "to": "C"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_temperature.py:14-15",
+      "expect": -273.15,
+      "tolerance": 1e-09
+     },
+     {
+      "name": "below absolute zero",
+      "function": "convertTemperature",
+      "args": {
+       "value": -300,
+       "from": "C",
+       "to": "K"
+      },
+      "origin": "source-test",
+      "evidence": "tests/test_temperature.py:18-20",
+      "expectError": true
+     },
+     {
+      "name": "convert picks length",
+      "function": "convert",
+      "args": {
+       "value": 5,
+       "from": "km",
+       "to": "mi"
+      },
+      "origin": "derived",
+      "expect": 3.1068559611866697,
+      "arithmetic": "5 * 1000 / 1609.344",
+      "tolerance": 1e-09
+     },
+     {
+      "name": "two kinds cannot convert",
+      "function": "convert",
+      "args": {
+       "value": 1,
+       "from": "km",
+       "to": "kg"
+      },
+      "origin": "derived",
+      "expectError": true
+     },
+     {
+      "name": "half to even rounds 2.5 down",
+      "function": "rounded",
+      "args": {
+       "value": 2.5,
+       "places": 0
+      },
+      "origin": "derived",
+      "expect": 2
+     },
+     {
+      "name": "half to even at two places",
+      "function": "rounded",
+      "args": {
+       "value": 0.125,
+       "places": 2
+      },
+      "origin": "derived",
+      "expect": 0.12,
+      "tolerance": 1e-12
+     },
+     {
+      "name": "plain rounding",
+      "function": "rounded",
+      "args": {
+       "value": 3.14159,
+       "places": 2
+      },
+      "origin": "derived",
+      "expect": 3.14,
+      "tolerance": 1e-12
+     },
+     {
+      "name": "a Celsius table",
+      "function": "table",
+      "args": {
+       "from": "C",
+       "to": "F",
+       "start": 0,
+       "stop": 30,
+       "step": 10
+      },
+      "origin": "derived",
+      "expect": [
+       {
+        "value": 0,
+        "converted": 32
+       },
+       {
+        "value": 10,
+        "converted": 50
+       },
+       {
+        "value": 20,
+        "converted": 68
+       },
+       {
+        "value": 30,
+        "converted": 86
+       }
+      ],
+      "tolerance": 1e-09
+     },
+     {
+      "name": "the stop is included",
+      "function": "table",
+      "args": {
+       "from": "m",
+       "to": "cm",
+       "start": 1,
+       "stop": 3,
+       "step": 1
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "lengthIs",
+       "value": 3
+      }
+     },
+     {
+      "name": "Celsius to Fahrenheit and back",
+      "function": "convertTemperature",
+      "args": {
+       "value": 25,
+       "from": "C",
+       "to": "F"
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "roundTrip",
+       "via": "convertTemperature",
+       "into": "value",
+       "back": "value",
+       "value": {
+        "from": "F",
+        "to": "C"
+       }
+      }
+     },
+     {
+      "name": "more kilometres, more miles",
+      "function": "convertLength",
+      "args": {
+       "value": 1,
+       "from": "km",
+       "to": "mi"
+      },
+      "origin": "derived",
+      "property": {
+       "kind": "monotonic",
+       "argument": "value",
+       "values": [
+        1,
+        2,
+        3
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "purpose": "engineer.calls",
+   "match": "The command: convert\n",
+   "json": {
+    "command": "convert",
+    "input": {
+     "command": "convert",
+     "value": 5,
+     "from": "km",
+     "to": "mi"
+    },
+    "expect": {
+     "facts": {
+      "result": 3.1069
+     },
+     "tolerance": 1e-05,
+     "files": 0
+    }
+   }
+  },
+  {
+   "purpose": "engineer.calls",
+   "match": "The command: table\n",
+   "json": {
+    "command": "table",
+    "input": {
+     "command": "table",
+     "from": "C",
+     "to": "F",
+     "start": 0,
+     "stop": 30,
+     "step": 10
+    },
+    "expect": {
+     "facts": {
+      "rows": 4
+     },
+     "files": 2
+    }
+   }
+  },
+  {
+   "purpose": "engineer.calls",
+   "match": "The command: units\n",
+   "json": {
+    "command": "units",
+    "input": {
+     "command": "units",
+     "kind": "mass"
+    },
+    "expect": {
+     "facts": {
+      "count": 6
+     },
+     "files": 1
+    }
+   }
+  },
+  {
+   "purpose": "engineer.unit",
+   "match": "The unit: UnitTables\n",
+   "text": "```swift\nimport Foundation\n\n/// The units of each kind and their factors, as converter/units.py keeps them, in its order.\npublic enum UnitTables: UnitTablesContract {\n    static let length: [(String, Double)] = [\n        (\"mm\", 0.001), (\"cm\", 0.01), (\"m\", 1.0), (\"km\", 1000.0), (\"in\", 0.0254), (\"ft\", 0.3048), (\"yd\", 0.9144), (\"mi\", 1609.344),\n    ]\n    static let mass: [(String, Double)] = [\n        (\"mg\", 0.000001), (\"g\", 0.001), (\"kg\", 1.0), (\"oz\", 0.028349523125), (\"lb\", 0.45359237), (\"st\", 6.35029318),\n    ]\n    static let temperature = [\"C\", \"F\", \"K\"]\n\n    public static func kind(of unit: String) throws -> String {\n        if length.contains(where: { $0.0 == unit }) { return \"length\" }\n        if mass.contains(where: { $0.0 == unit }) { return \"mass\" }\n        if temperature.contains(unit) { return \"temperature\" }\n        throw CoreFailure.invalid(\"unknown unit: \\(unit). Use a length (mm cm m km in ft yd mi), a mass (mg g kg oz lb st) or C, F or K.\")\n    }\n\n    public static func lengthFactor(unit: String) throws -> Double {\n        guard let factor = length.first(where: { $0.0 == unit })?.1 else {\n            throw CoreFailure.invalid(\"unknown length unit: \\(unit). Use mm, cm, m, km, in, ft, yd or mi.\")\n        }\n        return factor\n    }\n\n    public static func massFactor(unit: String) throws -> Double {\n        guard let factor = mass.first(where: { $0.0 == unit })?.1 else {\n            throw CoreFailure.invalid(\"unknown mass unit: \\(unit). Use mg, g, kg, oz, lb or st.\")\n        }\n        return factor\n    }\n\n    public static func units(kind: String) throws -> [String] {\n        switch kind {\n        case \"length\": return length.map(\\.0)\n        case \"mass\": return mass.map(\\.0)\n        case \"temperature\": return temperature\n        default: throw CoreFailure.invalid(\"unknown kind: \\(kind). Use length, mass or temperature.\")\n        }\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.unit",
+   "match": "The unit: Conversions\n",
+   "once": true,
+   "text": "```swift\nimport Foundation\n\n/// Every conversion, the table and Python's rounding, ported from converter/length.py, mass.py, temperature.py and cli.py.\npublic enum Conversions: ConversionsContract {\n    static let absoluteZeroC = -273.15\n\n    public static func rounded(value: Double, places: Int) throws -> Double {\n        let scale = pow(10, places)\n        return (value * scale).rounded(.toNearestOrEven) / scale\n    }\n\n    public static func convertLength(value: Double, from: String, to: String) throws -> Double {\n        let metres = try value * UnitTables.lengthFactor(unit: from)\n        return try metres / UnitTables.lengthFactor(unit: to)\n    }\n\n    public static func convertMass(value: Double, from: String, to: String) throws -> Double {\n        let kilograms = try value * UnitTables.massFactor(unit: from)\n        return try kilograms / UnitTables.massFactor(unit: to)\n    }\n\n    public static func convertTemperature(value: Double, from: String, to: String) throws -> Double {\n        let celsius = try toCelsius(value, from)\n        if celsius < absoluteZeroC {\n            throw CoreFailure.invalid(\"\\(value) \\(from) is below absolute zero: give a temperature at or above -273.15 C.\")\n        }\n        return try fromCelsius(celsius, to)\n    }\n\n    public static func convert(value: Double, from: String, to: String) throws -> Double {\n        let fromKind = try? UnitTables.kind(of: from)\n        let toKind = try? UnitTables.kind(of: to)\n        guard let kind = fromKind, kind == toKind else {\n            throw CoreFailure.invalid(\"cannot convert \\(from) to \\(to): give two units of one kind (length, mass or temperature).\")\n        }\n        switch kind {\n        case \"length\": return try convertLength(value: value, from: from, to: to)\n        case \"mass\": return try convertMass(value: value, from: from, to: to)\n        default: return try convertTemperature(value: value, from: from, to: to)\n        }\n    }\n\n    public static func table(from: String, to: String, start: Double, stop: Double, step: Double) throws -> [ConversionRow] {\n        guard step > 0 else { throw CoreFailure.invalid(\"A step of \\(step) never reaches the stop: give a step above zero.\") }\n        var rows: [ConversionRow] = []\n        var value = start\n        while value <= stop {\n            rows.append(ConversionRow(value: value, converted: try convert(value: value, from: from, to: to)))\n            value += step\n        }\n        return rows\n    }\n\n    static func toCelsius(_ value: Double, _ unit: String) throws -> Double {\n        switch unit {\n        case \"C\": return value\n        case \"F\": return (value - 32) * 5 / 9\n        case \"K\": return value - 273.15\n        default: throw CoreFailure.invalid(\"unknown temperature unit: \\(unit). Use C, F or K.\")\n        }\n    }\n\n    static func fromCelsius(_ value: Double, _ unit: String) throws -> Double {\n        switch unit {\n        case \"C\": return value\n        case \"F\": return value * 9 / 5 + 32\n        case \"K\": return value + 273.15\n        default: throw CoreFailure.invalid(\"unknown temperature unit: \\(unit). Use C, F or K.\")\n        }\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.unit",
+   "match": "The unit: Conversions\n",
+   "text": "Fixed: `pow(10, places)` with an Int exponent is Foundation's Decimal power; the scale is a Double now.\n\n```swift\nimport Foundation\n\n/// Every conversion, the table and Python's rounding, ported from converter/length.py, mass.py, temperature.py and cli.py.\npublic enum Conversions: ConversionsContract {\n    static let absoluteZeroC = -273.15\n\n    public static func rounded(value: Double, places: Int) throws -> Double {\n        guard (0...15).contains(places) else { throw CoreFailure.invalid(\"\\(places) places is out of range: give 0 to 15.\") }\n        let scale = pow(10, Double(places))\n        return (value * scale).rounded(.toNearestOrEven) / scale\n    }\n\n    public static func convertLength(value: Double, from: String, to: String) throws -> Double {\n        let metres = try value * UnitTables.lengthFactor(unit: from)\n        return try metres / UnitTables.lengthFactor(unit: to)\n    }\n\n    public static func convertMass(value: Double, from: String, to: String) throws -> Double {\n        let kilograms = try value * UnitTables.massFactor(unit: from)\n        return try kilograms / UnitTables.massFactor(unit: to)\n    }\n\n    public static func convertTemperature(value: Double, from: String, to: String) throws -> Double {\n        let celsius = try toCelsius(value, from)\n        if celsius < absoluteZeroC {\n            throw CoreFailure.invalid(\"\\(value) \\(from) is below absolute zero: give a temperature at or above -273.15 C.\")\n        }\n        return try fromCelsius(celsius, to)\n    }\n\n    public static func convert(value: Double, from: String, to: String) throws -> Double {\n        let fromKind = try? UnitTables.kind(of: from)\n        let toKind = try? UnitTables.kind(of: to)\n        guard let kind = fromKind, kind == toKind else {\n            throw CoreFailure.invalid(\"cannot convert \\(from) to \\(to): give two units of one kind (length, mass or temperature).\")\n        }\n        switch kind {\n        case \"length\": return try convertLength(value: value, from: from, to: to)\n        case \"mass\": return try convertMass(value: value, from: from, to: to)\n        default: return try convertTemperature(value: value, from: from, to: to)\n        }\n    }\n\n    public static func table(from: String, to: String, start: Double, stop: Double, step: Double) throws -> [ConversionRow] {\n        guard step > 0 else { throw CoreFailure.invalid(\"A step of \\(step) never reaches the stop: give a step above zero.\") }\n        var rows: [ConversionRow] = []\n        var value = start\n        while value <= stop {\n            rows.append(ConversionRow(value: value, converted: try convert(value: value, from: from, to: to)))\n            value += step\n        }\n        return rows\n    }\n\n    static func toCelsius(_ value: Double, _ unit: String) throws -> Double {\n        switch unit {\n        case \"C\": return value\n        case \"F\": return (value - 32) * 5 / 9\n        case \"K\": return value - 273.15\n        default: throw CoreFailure.invalid(\"unknown temperature unit: \\(unit). Use C, F or K.\")\n        }\n    }\n\n    static func fromCelsius(_ value: Double, _ unit: String) throws -> Double {\n        switch unit {\n        case \"C\": return value\n        case \"F\": return value * 9 / 5 + 32\n        case \"K\": return value + 273.15\n        default: throw CoreFailure.invalid(\"unknown temperature unit: \\(unit). Use C, F or K.\")\n        }\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.handler",
+   "match": "The command: convert\n",
+   "text": "```swift\nimport Foundation\n\n/// `convert`: one value, converted and rounded half to even.\nenum ConvertHandler: CommandHandler {\n    static func run(_ arguments: ConvertArguments, _ kit: CommandKit) async throws -> [Product] {\n        let places = arguments.precision ?? 4\n        let raw = try Conversions.convert(value: arguments.value, from: arguments.from, to: arguments.to)\n        let result = try Conversions.rounded(value: raw, places: places)\n        return [\n            .value(\"result\", result, unit: arguments.to),\n            .say(\"\\(FactValue.format(arguments.value)) \\(arguments.from) is \\(FactValue.format(result)) \\(arguments.to).\"),\n        ]\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.handler",
+   "match": "The command: table\n",
+   "text": "```swift\nimport Foundation\n\n/// `table`: the rows as CSV, and as a report Canvas shows.\nenum TableHandler: CommandHandler {\n    static func run(_ arguments: TableArguments, _ kit: CommandKit) async throws -> [Product] {\n        let places = arguments.precision ?? 4\n        let rows = try Conversions.table(from: arguments.from, to: arguments.to, start: arguments.start, stop: arguments.stop, step: arguments.step)\n        guard rows.count <= 2000 else {\n            throw CoreFailure.invalid(\"That table has \\(rows.count) rows: give a larger step, for 2000 rows at most.\")\n        }\n        let cells = try rows.map { row in\n            [FactValue.format(row.value), FactValue.format(try Conversions.rounded(value: row.converted, places: places))]\n        }\n        let columns = [arguments.from, arguments.to]\n        let report = Report(name: \"table\", title: \"\\(arguments.from) to \\(arguments.to)\",\n                            subtitle: \"From \\(FactValue.format(arguments.start)) to \\(FactValue.format(arguments.stop)) in steps of \\(FactValue.format(arguments.step))\",\n                            blocks: [.table(columns: columns, rows: cells)])\n        return [\n            .value(\"rows\", rows.count),\n            .csv(\"table\", columns: columns, rows: cells),\n            .report(report),\n            .say(\"\\(rows.count) rows from \\(arguments.from) to \\(arguments.to).\"),\n        ]\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.handler",
+   "match": "The command: units\n",
+   "text": "```swift\nimport Foundation\n\n/// `units`: each unit of a kind with its factor in the kind's base unit.\nenum UnitsHandler: CommandHandler {\n    static func run(_ arguments: UnitsArguments, _ kit: CommandKit) async throws -> [Product] {\n        let kinds = arguments.kind.map { [$0] } ?? [\"length\", \"mass\", \"temperature\"]\n        var rows: [[String]] = []\n        for kind in kinds {\n            for unit in try UnitTables.units(kind: kind) {\n                switch kind {\n                case \"length\": rows.append([kind, unit, FactValue.format(try UnitTables.lengthFactor(unit: unit)) + \" m\"])\n                case \"mass\": rows.append([kind, unit, FactValue.format(try UnitTables.massFactor(unit: unit)) + \" kg\"])\n                default: rows.append([kind, unit, \"a scale of its own\"])\n                }\n            }\n        }\n        return [\n            .value(\"count\", rows.count),\n            .csv(\"units\", columns: [\"kind\", \"unit\", \"in its base unit\"], rows: rows),\n            .say(\"\\(rows.count) units of \\(kinds.joined(separator: \", \")).\"),\n        ]\n    }\n}\n```"
+  },
+  {
+   "purpose": "engineer.words",
+   "json": {
+    "name": "Unit Converter",
+    "tagline": "Converts lengths, masses and temperatures, and tabulates conversions, rounding as Python does.",
+    "keywords": [
+     "units",
+     "conversion",
+     "length",
+     "mass",
+     "temperature",
+     "metric",
+     "imperial"
+    ],
+    "category": "utilities"
+   }
+  }
+ ]
+}

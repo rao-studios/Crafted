@@ -1,0 +1,9 @@
+{
+  "format": "crafted-template/1",
+  "kind": "designer",
+  "tokens": {"word": "atelierword", "display": "Atelier Template", "base": "Atelier", "lowerBase": "atelier"},
+  "skip": [".build", ".swiftpm", ".build-template", "template.json"],
+  "verbatim": [
+    "Sources/AtelierKit/Resources/Style"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "unit": "TipMath",
+  "vectors": [
+    {"name": "good service is 18 percent", "function": "percent", "args": {"service": "good"}, "expect": 18, "origin": "derived", "evidence": "presets.json:2"},
+    {"name": "an unknown service is refused", "function": "percent", "args": {"service": "stellar"}, "expectError": true, "origin": "derived"},
+    {"name": "18 percent of 50 between two", "function": "breakdown", "args": {"bill": 50, "percent": 18, "people": 2},
+     "expect": {"bill": 50, "percent": 18, "tip": 9, "total": 59, "perPerson": 29.5}, "tolerance": 0.001, "origin": "derived"},
+    {"name": "a negative bill is refused", "function": "breakdown", "args": {"bill": -1, "percent": 18, "people": 1}, "expectError": true, "origin": "derived"},
+    {"name": "the tip rises with the bill", "function": "breakdown", "args": {"bill": 10, "percent": 18, "people": 1},
+     "property": {"kind": "monotonic", "argument": "bill", "values": [10, 20, 40], "path": "tip"}, "origin": "derived"},
+    {"name": "shares sum to the total", "function": "shares", "args": {"total": 100, "people": 3},
+     "property": {"kind": "sumsTo", "value": 100}, "tolerance": 0.001, "origin": "derived"},
+    {"name": "one share per person", "function": "shares", "args": {"total": 100, "people": 3},
+     "property": {"kind": "lengthIs", "value": 3}, "origin": "derived"},
+    {"name": "the first share takes the extra cent", "function": "shares", "args": {"total": 100, "people": 3},
+     "expect": [33.34, 33.33, 33.33], "tolerance": 0.0001, "origin": "derived"},
+    {"name": "a tip stays within the bill at 100 percent or less", "function": "breakdown", "args": {"bill": 80, "percent": 22, "people": 1},
+     "property": {"kind": "inRange", "path": "tip", "min": 0, "max": 80}, "origin": "derived"}
+  ]
+}

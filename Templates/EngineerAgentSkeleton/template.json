@@ -1,0 +1,14 @@
+{
+  "format": "crafted-template/1",
+  "kind": "engineer",
+  "tokens": {"word": "skeletonword", "display": "Skeleton Template", "base": "Skeleton", "lowerBase": "skeleton"},
+  "skip": [".build", ".swiftpm", ".build-template", "template.json", "Sample"],
+  "verbatim": [
+    "Sources/SkeletonCore/Logic",
+    "Sources/SkeletonCore/Lifted",
+    "Sources/SkeletonCore/Resources",
+    "Sources/SkeletonAgent/Handlers",
+    "Tests/SkeletonCoreTests/Vectors",
+    "Tests/SkeletonAgentTests/Calls"
+  ]
+}
