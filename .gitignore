@@ -62,10 +62,10 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 # Crafted
-# Build output: SwiftPM's, each track's scratch builds, and the packaged app, pkg and icon sheets.
+# Build output: SwiftPM's, each track's scratch builds, and (at the root only) the packaged app, pkg and icon sheets.
 .build/
 .build-*/
-build/
+/build/
 # Editors and agents.
 .vscode/
 .claude/

@@ -129,7 +129,60 @@ Push it to GitHub and list it in the store, or install it into Craft directly wi
 
 ## Build and run
 
-The requirements are in [What your Mac needs](#what-your-mac-needs). Then:
+The requirements are in [What your Mac needs](#what-your-mac-needs).
+
+### The installer
+
+**Installing Crafted.**
+
+1. Download `Crafted-<version>.pkg` from [Releases](https://github.com/rao-studios/Crafted/releases).
+2. Open it, and follow the installer through. It runs only on Apple silicon and macOS 27, and it puts `Crafted.app` in `/Applications`.
+3. If an older Crafted is running, the installer quits it first, then opens the new one when it finishes.
+4. On first launch, the onboarding downloads the two models, or finds them if Craft already has.
+
+The pkg is signed with Rao Studios' Developer ID and notarized by Apple, so it opens without a Gatekeeper warning. To check a download yourself:
+
+```sh
+pkgutil --check-signature Crafted-0.0.0.pkg          # Developer ID Installer: Rao Studios, LLC.; notarized
+spctl --assess --type install -vv Crafted-0.0.0.pkg   # accepted · source=Notarized Developer ID
+sudo installer -pkg Crafted-0.0.0.pkg -target /       # the same install, from Terminal (it neither quits nor reopens the app)
+```
+
+**Making the installer.** `./Scripts/release/release.sh` turns a clean, committed checkout into a notarized pkg:
+
+```sh
+./Scripts/release/release.sh                      # this version and build again
+./Scripts/release/release.sh 0.1.0 2              # set version 0.1.0, build 2, and release it
+SKIP_NOTARIZE=1 ./Scripts/release/release.sh      # stop at the signed .pkg
+```
+
+1. **Version.** Given a version and build, it writes them to `Support/Info.plist` and commits that change on its own, so the build stamps a clean commit.
+2. **The app.** `make-app.sh` makes a release build, then assembles the bundle:
+   - MLX's `mlx.metallib` beside the executable;
+   - the resource bundles and both agent templates in `Contents/Resources`;
+   - the icon, compiled by `actool`.
+
+   It then signs everything from the inside out, with the hardened runtime and a timestamp.
+3. **The package.** `pkgbuild` makes a component that installs to `/Applications`, is never relocated, and carries a preinstall and a postinstall script. `productbuild` wraps it with `Distribution.xml`, which allows arm64 on macOS 27 or later, and signs it as Developer ID Installer.
+4. **Notarization.** `notarytool submit --wait` sends it to Apple. Then `stapler` staples the ticket to both the pkg and the app, and `spctl` assesses each.
+5. **Out.** You get `build/Crafted-<version>.pkg`, and a manifest of the commits it was built from. Those commits are also stamped into the app's Info.plist. The script prints the tag to push. A release is then:
+
+   ```sh
+   git tag -a v0.1.0 -m 'Crafted 0.1.0 (2)' && git push origin main v0.1.0
+   gh release create v0.1.0 build/Crafted-0.1.0.pkg --title 'Crafted 0.1.0'
+   ```
+
+It needs a Developer ID Application identity and a Developer ID Installer identity in the keychain. It also needs a notarytool keychain profile, `xcrun notarytool store-credentials rao-notary --apple-id <id> --team-id <team>` (`NOTARY_PROFILE` names another).
+
+The installer's own files, `Support/Pkg/{Distribution.xml, scripts/preinstall, scripts/postinstall}`, are kept on the maintainer's Mac, not in this repository. A fork that ships its own installer writes its own. Here is what ours do:
+
+- **Distribution.xml** allows Apple silicon and macOS 27 or later, with one choice, installed to `/Applications`.
+- **The preinstall script** quits a running `/Applications/Crafted.app` for the signed-in user: politely first, then by force after ten seconds.
+- **The postinstall script** opens the new app for that user.
+
+Both scripts do nothing on a command-line install.
+
+### From source
 
 ```sh
 swift build --build-system native            # every target (the native build system: see Scripts/dev/dev.sh)
@@ -189,3 +242,5 @@ Questions, problems, or an agent you made with Crafted that you would like us to
 ## Licence
 
 Crafted is under the GNU General Public License v3.0 (`LICENSE`). The agent templates in `Templates/` are under the MIT licence, so the agents you make with Crafted are yours to licence as you choose; the listing form sets it.
+
+> *"What really knocks me out is a book that, when you're all done reading it, you wish the author that wrote it was a terrific friend of yours and you could call him up on the phone whenever you felt like it."* — Holden Caulfield, in J.D. Salinger's *The Catcher in the Rye*
