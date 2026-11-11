@@ -1,11 +1,11 @@
 """Renders Crafted's README plates in the Rao plate style (Weave's and Craft's plates.py), from HTML, through the
 installed Google Chrome driven by Playwright (pip install playwright). No server, no model.
 
-    python3 -I Docs/README_Assets/src/plates.py Docs/README_Assets [hero] [how]
+    python3 -I Docs/README_Assets/src/plates.py Docs/README_Assets [hero] [how] [mac] [time]
 
 Inputs:  this folder's rr-mark.png (Rao's current mark, from rao.nyc's public/rr-mark.png); Playfair Display Italic from
          ~/Library/Fonts.
-Outputs in argv[1]: hero.png (1200x630 at 2x: 2400x1260) and how.png (1600 wide at 2x).
+Outputs in argv[1]: hero.png (1200x630 at 2x: 2400x1260); how.png, mac.png and time.png (1600 wide at 2x).
 
 What the hero draws follows the app: two folders come in from the left, a designer's work (its palette showing)
 and an engineer's project (its code showing), each on its own thread, brass and blue. Both pass through the eye
@@ -292,7 +292,168 @@ html, body {{ width: {W}px; height: 960px; }}
     shoot(browser, page, os.path.join(OUT, "how.png"), viewport=(W, 960), prepare=PLATE_ALIGN)
 
 
-TARGETS = {"hero": hero, "how": how}
+
+# MARK: What a Mac needs, and where the time goes
+
+SKY = "#8ea5bc"
+GREY = "#cbc8c0"
+
+PLATE_HEAD = """<style>{css}
+html, body {{ width: {w}px; height: {h}px; }}
+.mark {{ position: absolute; left: 68.8px; top: 69.3px; width: 46.2px; }}
+.caption {{ left: 145.8px; top: 78px; font-size: 15px; }}
+.title {{ left: 30px; top: 150px; font-size: 104px; padding-bottom: 20px; }}
+.sub {{ left: 66px; top: 272px; font-size: 32px; }}
+.section {{ position: absolute; left: 70px; font-size: 14px; letter-spacing: .3em; color: #8b8a84; }}
+text {{ font-family: "Playfair", Georgia, serif; font-style: italic; }}
+.num {{ font-family: {mono}; font-style: normal; }}
+</style>"""
+
+
+def plate_page(name, height, caption, title, sub, svg):
+    head = PLATE_HEAD.format(css=HEAD_CSS, w=W, h=height, mono=MONO)
+    return f"""<!doctype html><html><head><meta charset="utf-8">{head}</head><body>
+<img class="mark" src="rr-mark.png">
+<div class="caption">{caption}</div>
+<div class="title">{title}</div>
+<div class="sub">{sub}</div>
+<svg width="{W}" height="{height}">{svg}</svg>
+</body></html>"""
+
+
+def label(x, y, text, size=19, colour="#a29f97", anchor="start", bold=None):
+    inner = text if not bold else f'<tspan fill="#e9e7e0">{bold}</tspan> {text}'
+    return f'<text x="{x}" y="{y}" font-size="{size}" fill="{colour}" text-anchor="{anchor}">{inner}</text>'
+
+
+def num(x, y, text, size=13, colour="#8b8a84", anchor="middle"):
+    return f'<text class="num" x="{x}" y="{y}" font-size="{size}" fill="{colour}" text-anchor="{anchor}">{text}</text>'
+
+
+def swatch(x, y, colour, dashed=False):
+    if dashed:
+        return f'<rect x="{x}" y="{y - 12}" width="16" height="16" rx="3" fill="none" stroke="{GREY}" stroke-opacity=".5" stroke-dasharray="3 3"/>'
+    return f'<rect x="{x}" y="{y - 12}" width="16" height="16" rx="3" fill="{colour}"/>'
+
+
+def mac(browser):
+    """The hardware: what one run holds at its peak against a 48 GB Mac, and the Macs Crafted runs on, today and next."""
+    svg = ""
+    # A run at its peak: one bar, 25 px a GB, against the 48 GB the coder needs today.
+    x0, y0, per, bar = 70, 470, 22, 58
+    segments = [(27.5, BRASS, 1, "the coder's weights", "27.5 GB"),
+                (0.6, BRASS, .55, "its context, at 24,000 tokens", "under 1 GB"),
+                (3.0, CLAY, .85, "a swift build beside it", "about 3 GB"),
+                (8.0, GREY, .32, "macOS and your other apps", "about 8 GB")]
+    svg += f'<rect x="{x0}" y="{y0}" width="{48 * per}" height="{bar}" rx="8" fill="rgba(255,255,255,.025)" stroke="{GREY}" stroke-opacity=".28" stroke-dasharray="5 4"/>'
+    at = 0.0
+    for gb, colour, opacity, _, _ in segments:
+        svg += f'<rect x="{x0 + at * per:.1f}" y="{y0}" width="{gb * per:.1f}" height="{bar}" fill="{colour}" fill-opacity="{opacity}"/>'
+        at += gb
+    svg += f'<rect x="{x0}" y="{y0}" width="{at * per:.1f}" height="{bar}" rx="8" fill="none" stroke="#000" stroke-opacity=".001"/>'
+    for gb in range(0, 49, 8):
+        x = x0 + gb * per
+        svg += f'<line x1="{x}" y1="{y0 + bar + 6}" x2="{x}" y2="{y0 + bar + 14}" stroke="{GREY}" stroke-opacity=".45"/>'
+        svg += num(x, y0 + bar + 34, f"{gb} GB" if gb == 48 else str(gb))
+    # The total, bracketed above the bar, and the room left.
+    svg += (f'<path d="M{x0},{y0 - 12} L{x0},{y0 - 20} L{x0 + at * per:.1f},{y0 - 20} L{x0 + at * per:.1f},{y0 - 12}" fill="none" stroke="{GREY}" stroke-opacity=".5"/>'
+            + label(x0, y0 - 32, "at the peak, of a 48 GB Mac", 20, bold="about 40 GB"))
+    spare = x0 + at * per
+    svg += label(spare + (48 * per - at * per) / 2, y0 + bar / 2 + 7, "~8 GB spare", 17, "#8b8a84", "middle")
+    # The legend, to the right of the bar.
+    lx, ly = x0 + 48 * per + 44, y0 - 14
+    for i, (gb, colour, opacity, name, size) in enumerate(segments):
+        y = ly + i * 30
+        svg += f'<rect x="{lx}" y="{y - 12}" width="16" height="16" rx="3" fill="{colour}" fill-opacity="{opacity}"/>'
+        svg += label(lx + 26, y + 2, name, 16, "#8b8a84", bold=size)
+
+    # The Macs: each one's memory as a bar at 15 px a GB, the coder it runs inside it.
+    top, step, per2, bx = 730, 64, 12, 190
+    rows = [(16, "planned", "Qwen2.5-Coder 7B", 4.3, "and a smaller vision model"),
+            (24, "planned", "Qwen2.5-Coder 14B", 8.3, ""),
+            (32, "planned", "Qwen3-Coder 30B", 17.2, ""),
+            (48, "today", "Qwen3-Coder-Next 48B", 27.5, "with little to spare"),
+            (64, "today", "Qwen3-Coder-Next 48B", 27.5, "with room to spare")]
+    for i, (gb, when, model, weights, note) in enumerate(rows):
+        y = top + i * step
+        today = when == "today"
+        svg += label(70, y + 27, "GB", 19, "#8b8a84", bold=str(gb) + ("+" if gb == 64 else ""))
+        dash = "" if today else ' stroke-dasharray="6 5"'
+        svg += (f'<rect x="{bx}" y="{y}" width="{gb * per2}" height="38" rx="7" fill="rgba(255,255,255,{.035 if today else .015})" '
+                f'stroke="{GREY}" stroke-opacity="{.35 if today else .25}"{dash}/>')
+        svg += (f'<rect x="{bx + 4}" y="{y + 4}" width="{weights * per2 - 4}" height="30" rx="5" fill="{BRASS}" '
+                f'fill-opacity="{.95 if today else .28}"/>')
+        tx = bx + 64 * per2 + 30
+        colour = BRASS if today else "#8b8a84"
+        svg += f'<text x="{tx}" y="{y + 26}" font-size="15" fill="{colour}" letter-spacing="3">{when.upper()}</text>'
+        svg += label(tx + 96, y + 26, f"· {weights} GB" + (f", {note}" if note else ""), 17, "#8b8a84", bold=model)
+    svg += label(bx, top + 5 * step + 22, "the brass is the coder, inside the Mac's memory: solid today, faint where a smaller coder is planned", 16, "#6f6d67")
+
+    page = plate_page("mac", 1100, "RAO STUDIOS · CRAFTED · WHAT YOUR MAC NEEDS", "48 GB, for now",
+                      "two models on your Mac, one in memory at a time",
+                      f'<foreignObject></foreignObject>{svg}')
+    page = page.replace("<svg ", '<div class="section" style="top:372px">A RUN AT ITS PEAK</div>'
+                        '<div class="section" style="top:680px">THE MACS IT RUNS ON</div><svg ', 1)
+    shoot(browser, page, os.path.join(OUT, "mac.png"), viewport=(W, 1100), prepare=PLATE_ALIGN)
+
+
+def timeline(x0, y0, width, height, minutes, bands, phases, ticks, title, total):
+    """One run: what is in memory (GB, up) as the minutes pass (right), with its phases named beneath."""
+    gb = lambda v: y0 + height - v / 48 * height
+    mx = lambda m: x0 + m / minutes * width
+    svg = label(x0, y0 - 44, title[1], 20, "#8b8a84", bold=title[0])
+    svg += label(x0 + width, y0 - 44, "", 22, BRASS, "end", bold=total)
+    for v in (0, 16, 32, 48):
+        y = gb(v)
+        dash = ' stroke-dasharray="6 5"' if v == 48 else ""
+        svg += f'<line x1="{x0}" y1="{y}" x2="{x0 + width}" y2="{y}" stroke="{GREY}" stroke-opacity="{.4 if v in (0, 48) else .1}"{dash}/>'
+        svg += num(x0 - 14, y + 4, f"{v}", anchor="end")
+    svg += label(x0 + width - 4, gb(48) - 8, "48 GB, the floor today", 15, "#8b8a84", "end")
+    for start, end, low, high, colour, opacity in bands:
+        svg += (f'<rect x="{mx(start):.1f}" y="{gb(high):.1f}" width="{mx(end) - mx(start):.1f}" height="{gb(low) - gb(high):.1f}" '
+                f'rx="3" fill="{colour}" fill-opacity="{opacity}"/>')
+    for m in ticks:
+        svg += f'<line x1="{mx(m):.1f}" y1="{gb(0)}" x2="{mx(m):.1f}" y2="{gb(0) + 8}" stroke="{GREY}" stroke-opacity=".5"/>'
+        svg += num(mx(m), gb(0) + 26, f"{m:g}")
+    svg += num(x0 + width + 14, gb(0) + 26, "min", anchor="start")
+    for start, end, lines in phases:
+        y = gb(0) + 50
+        svg += f'<path d="M{mx(start) + 3:.1f},{y} L{mx(end) - 3:.1f},{y}" stroke="{GREY}" stroke-opacity=".35" stroke-width="1.5"/>'
+        for j, line in enumerate(lines):
+            svg += label(mx(start) + 3, y + 22 + j * 21, line, 16.5, "#8b8a84")
+    svg += num(x0 - 14, y0 - 14, "GB", anchor="end")
+    return svg
+
+
+def time(browser):
+    """Where the time goes in a designer's run and a small engineer's run, and what is in memory meanwhile."""
+    legend_y = 384
+    legend = ""
+    for i, (colour, opacity, name) in enumerate([(SKY, .9, "the vision model, 10.4 GB"), (BRASS, .95, "the coder, 27.5 GB"),
+                                                  (CLAY, .9, "a swift build beside it")]):
+        x = 70 + i * 330
+        legend += f'<rect x="{x}" y="{legend_y - 13}" width="16" height="16" rx="3" fill="{colour}" fill-opacity="{opacity}"/>'
+        legend += label(x + 26, legend_y + 1, name, 18, "#8b8a84")
+    designer = timeline(
+        120, 500, 1340, 210, 20,
+        [(1, 10, 0, 11.2, SKY, .9), (10.5, 20, 0, 29, BRASS, .95), (13.5, 20, 29, 32, CLAY, .9)],
+        [(0, 1, ["read"]), (1, 10, ["measure, then look at one piece at a time,", "about 20 seconds each"]),
+         (10.5, 13.5, ["write the", "design system"]), (13.5, 20, ["build, test and install the agent,", "draw the proofs"])],
+        [0, 1, 10, 13.5, 20], ("A designer's folder", "· 24 pieces looked at"), "about 15–20 min")
+    spikes = [(m, m + 0.45, 29, 32, CLAY, .9) for m in (19.4, 20.5, 21.6, 22.6, 23.7, 24.8, 25.8, 26.9)]
+    engineer = timeline(
+        120, 940, 1340, 210, 34,
+        [(0.6, 34, 0, 29, BRASS, .95)] + spikes + [(28, 34, 29, 32, CLAY, .9)],
+        [(0, 9, ["load, then walk:", "a card per file"]), (9, 14, ["use", "cases"]), (14, 18, ["three agents:", "you choose"]),
+         (18, 28, ["plan, then port: write, build, test,", "one unit at a time"]), (28, 34, ["test, install,", "call each command"])],
+        [0, 9, 14, 18, 28, 34], ("A small project", "· about 10 files"), "about 25–40 min")
+    note = label(70, 1306, "Estimates on an M4 Max with 128 GB, from the coder's measured speed; they will be replaced by measured runs.", 16, "#6f6d67")
+    page = plate_page("time", 1340, "RAO STUDIOS · CRAFTED · HOW LONG A RUN TAKES", "Where the time goes",
+                      "minutes on the way across, the memory in use going up", legend + designer + engineer + note)
+    shoot(browser, page, os.path.join(OUT, "time.png"), viewport=(W, 1340), prepare=PLATE_ALIGN)
+
+
+TARGETS = {"hero": hero, "how": how, "mac": mac, "time": time}
 
 
 def main():

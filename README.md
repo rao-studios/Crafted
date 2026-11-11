@@ -22,33 +22,13 @@ Crafted runs both of its models on your Mac, with nothing sent anywhere, so it a
 | **System** | macOS 27 | |
 | **Tools** | Xcode, or the Command Line Tools, with Swift 6.4 | To build, test and install the agent it makes. An engineer's agent needs them; a designer's agent can be made without them, marked "not built here" |
 
-```
- What a run holds at its peak, against a Mac's memory (one column = 1 GB)
-
- 0       8       16      24      32      40      48 GB
- ├───────┼───────┼───────┼───────┼───────┼───────┤
- ███████████████████████████▌                             the coder's weights, 27.5 GB
-                             ▓                            its context, under 1 GB at 24k tokens
-                              ▒▒▒                         a swift build beside it, about 3 GB
-                                 ░░░░░░░░                 macOS and your other apps, about 8 GB
- ███████████████████████████▌▓▒▒▒░░░░░░░░                 about 40 GB: a 48 GB Mac has ~8 to spare
-```
+<p align="center"><img src="Docs/README_Assets/mac.png" alt="48 GB, for now: two models on your Mac, one in memory at a time. A run at its peak, on a bar from 0 to 48 GB: the coder's weights, 27.5 GB; its context at 24,000 tokens, under 1 GB; a swift build beside it, about 3 GB; macOS and your other apps, about 8 GB; about 40 GB in all, with about 8 GB spare on a 48 GB Mac. The Macs it runs on: 48 GB and 64 GB or more today, with Qwen3-Coder-Next 48B at 27.5 GB; planned for 32 GB, Qwen3-Coder 30B at 17.2 GB; for 24 GB, Qwen2.5-Coder 14B at 8.3 GB; for 16 GB, Qwen2.5-Coder 7B at 4.3 GB and a smaller vision model." width="800"></p>
 
 Only one model is in memory at a time. A designer's run does all its looking with the 10.4 GB vision model first, then lets it go before the coder loads. The weights and the context figures are the models' own; the build and the system figures are typical, not measured.
 
 ### Bringing it to smaller Macs
 
-Today's 48 GB floor is the price of the coder Crafted trusts most. Memory is the most expensive part of a Mac, so we are working to bring Crafted to smaller ones:
-
-```
- Mac memory   the coder it runs
-
-  16 GB   ░░░░░░░░░░░░░░░░   planned · Qwen2.5-Coder 7B, 4.3 GB, and a smaller vision model
-  24 GB   ░░░░░░░░░░░░░░░░   planned · Qwen2.5-Coder 14B, 8.3 GB
-  32 GB   ░░░░░░░░░░░░░░░░   planned · Qwen3-Coder 30B, 17.2 GB
-  48 GB   ████████████████   today   · Qwen3-Coder-Next 48B, 27.5 GB, with little to spare
-  64 GB+  ████████████████   today   · the same, with room for everything else you have open
-```
+Today's 48 GB floor is the price of the coder Crafted trusts most. Memory is the most expensive part of a Mac, so we are working to bring Crafted to smaller ones, as the plate above shows:
 
 - **Smaller coders.** Rao Studios already mirrors smaller coders for Craft, and Crafted's model catalog takes a new model as a single entry.
 - **Retries guard quality.** A smaller model may need more attempts, because every unit it writes is compiled and tested before it counts. A run on a smaller Mac should take longer and may leave more out, but it will not ship a command that fails its checks.
@@ -86,8 +66,6 @@ You pick one, or steer with your own words. Crafted then ports it to Swift insid
 
 Both paths follow the rule PlateAgent taught Craft: **the model says what it means, and fixed code places it.** A model writes meaning into small typed slots: a style document, a file card, a command spec, one Swift function behind a contract the compiler checks. The wiring, the layout, the conformance to `granite-agent/1` and every check are fixed code. Accuracy matters more than speed here. A run can take a long time, and every answer a model gives is kept on disk, so a cancelled or interrupted run resumes where it stopped and asks nothing twice.
 
-The plates are rebuilt by `Docs/README_Assets/src/build.sh`.
-
 ## How long a run takes
 
 Crafted is built for accuracy, not speed: it reads everything, checks every claim against the source, and compiles and tests every unit it writes. On-device models are slower than a data centre's, so expect a run to be measured in minutes for a designer's folder and in hours for a large project. You can leave it running: it holds the Mac awake while it works, and anything it has already asked a model is kept on disk.
@@ -107,38 +85,9 @@ Crafted is built for accuracy, not speed: it reads everything, checks every clai
 
 These are estimates until the first runs on the real models; we will replace them with measured times. Another chip will differ, mostly with its memory bandwidth. Memory beyond what a run needs does not make it faster.
 
-Where the time goes, and what is in memory while it does:
+<p align="center"><img src="Docs/README_Assets/time.png" alt="Where the time goes, minutes across and memory in use going up, on an M4 Max. A designer's folder, 24 pieces looked at, about 15 to 20 minutes: a minute to read the folder; the vision model, 10.4 GB, from minute 1 to 10, measuring and then looking at one piece at a time, about 20 seconds each; the coder, 27.5 GB, from minute 10 and a half, writing the design system until 13 and a half, then a swift build beside it to build, test and install the agent and draw the proofs, until about 20. A small project, about 10 files, about 25 to 40 minutes: the coder, 27.5 GB, throughout: load, then walk a card per file until minute 9; use cases until 14; three agents for you to choose until 18; plan, then port, writing, building and testing one unit at a time, with a short swift build at each try, until 28; then test, install and call each command until about 34. Both stay under the 48 GB floor. Estimates, from the coder's measured speed." width="800"></p>
 
-```
- GB   Designer · a folder, 24 pieces looked at · about 15–20 min
- 48 ┤  · · · · · · · · · · · · · · · · · · · · · · · · · · · ·   48 GB, the floor today
- 40 ┤
- 32 ┤                                          ▒▒▒▒▒▒▒▒▒▒▒▒▒▒    ▒ a swift build beside it
- 24 ┤                                  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓    ▓ the coder, 27.5 GB
- 16 ┤                                  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  8 ┤     ░░░░░░░░░░░░░░░░░░░░░░░░░░░  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓    ░ the vision model, 10.4 GB
-  0 ┼──┴──┴──────────────────────────┴──┴──────┴─────────────┴─▶
-       0  1                          10 11     13.5          18 min
-          measure, then look at one     write  build, test,
-          piece at a time, ~20 s each   the    install, draw
-                                        style  the proofs
-```
-
-```
- GB   Engineer · a small project, about 10 files · about 25–40 min
- 48 ┤  · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·   48 GB, the floor today
- 40 ┤
- 32 ┤                                    ▒ ▒ ▒ ▒ ▒ ▒▒ ▒ ▒▒▒▒▒▒▒    ▒ a swift build at each try
- 24 ┤   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓    ▓ the coder, 27.5 GB
- 16 ┤   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  8 ┤   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  0 ┼──┴───────────────┴───────┴───────┴────────────────┴──────┴─▶
-       0               9       14      18               28     32 min
-       load, then      use     three   plan, then port: tests,
-       walk: a card    cases   agents, write · build ·  install,
-       per file                choose  test, a unit     calls
-                                       at a time
-```
+The plates are rebuilt by `Docs/README_Assets/src/build.sh`.
 
 ## The models
 
