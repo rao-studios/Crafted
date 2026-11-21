@@ -188,7 +188,8 @@ public actor MLXModelRuntime {
             switch item {
             case .chunk(let chunk): text += chunk
             case .info(let completion): info = completion
-            case .toolCall: break
+            case .toolCall, .rejectedToolCall, .steering: break
+            case .reasoning: break  // Thinking is not the reply: only the chunks are.
             }
             if let seconds = ask.seconds, Date().timeIntervalSince(started) > seconds {
                 finish = .deadline
